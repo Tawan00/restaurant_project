@@ -17,8 +17,6 @@ class _SearchFoodState extends State<SearchFood> {
     Getfoods();
   }
 
-
-
   var control;
   List<FoodsModel> items;
   List<FoodsModel> filterItems;
