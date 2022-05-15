@@ -69,8 +69,8 @@ class _ReceiveTablesState extends State<ReceiveTables> {
     pickedTimeStart = TimeOfDay.now();
     pickedTimeEnd = TimeOfDay.now();
     st = "เลือกวันที่";
-    pks = "เวลาเริ่ม";
-    pke = "เวลาสิ้นสุด";
+    pks = "9:00:00";
+    pke = "11:00:00";
     getToken();
   }
 
@@ -149,7 +149,7 @@ class _ReceiveTablesState extends State<ReceiveTables> {
     String bt_tel,
   ) async {
     final String url =
-        "http://itoknode@itoknode.comsciproject.com/table/addtable";
+        "http://itoknode@itoknode.comsciproject.com/table/addtable2";
     final response = await http.post(Uri.parse(url), body: {
       "acc_id": acc_id,
       "bt_count": bt_count,
