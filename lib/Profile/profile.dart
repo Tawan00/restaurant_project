@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
 import 'package:restaurant_project/Addmin/ControllerUser/UserList.dart';
 import 'package:restaurant_project/Homepage/HomePage.dart';
 import 'package:restaurant_project/Model/LRModel/LoginModel.dart';
@@ -58,6 +62,7 @@ class _ProfileState extends State<Profile> {
         accName.text = userModel[0].accName;
         accSname.text = userModel[0].accSname;
         accAddr.text = userModel[0].accAddr;
+        accImg.text = userModel[0].accImg.toString();
         accTel.text = userModel[0].accTel;
         accEmail.text = userModel[0].accEmail;
         accUser.text = userModel[0].accUser;
@@ -100,6 +105,27 @@ class _ProfileState extends State<Profile> {
     } else {
       return null;
     }
+  }
+
+  File _image;
+  final picker = ImagePicker();
+  String BaseNoImage =
+      "http://itoknode.comsciproject.com/images/foods/BaseNoImage.png";
+
+  _upload() {
+    if (_image == null) return "";
+    String base64Image = base64Encode(_image.readAsBytesSync());
+    String fileName = _image.path.split("/").last;
+    print(fileName);
+    http.post("http://itoknode@itoknode.comsciproject.com/foods/images", body: {
+      "image": base64Image,
+      "name": fileName,
+    }).then((res) {
+      print("status :" + res.statusCode.toString());
+      print("fileName :" + fileName);
+    }).catchError((err) {
+      print(err);
+    });
   }
 
   @override
@@ -146,82 +172,59 @@ class _ProfileState extends State<Profile> {
                 child: Column(
                   children: <Widget>[
                     SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: (userModel[0].accImg == null ||
-                                userModel[0].accImg == "")
-                            ? Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                  CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    child: ClipOval(
-                                      // child: Image.asset('assets/icon/user1.png',
-                                      //     width: 90, height: 90, fit: BoxFit.cover),
-                                      child: Icon(
-                                        Icons.person,
-                                        color: Colors.black,
-                                        size: 60.0,
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: 0,
-                                    bottom: 0,
-                                    child: SizedBox(
-                                      height: 30,
-                                      width: 30,
-                                      child: FlatButton(
-                                        padding: EdgeInsets.zero,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          side: BorderSide(color: Colors.black),
-                                        ),
-                                        color: Color(0xFFF5F6F9),
-                                        onPressed: () {},
-                                        child: Image.asset(
-                                          'assets/images/camera.png',
-                                          width: 20,
-                                          height: 20,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                  CircleAvatar(
-                                      //backgroundColor: Colors.white,
-                                      backgroundImage:
-                                          NetworkImage(userModel[0].accImg)),
-                                  Positioned(
-                                    right: 0,
-                                    bottom: 0,
-                                    child: SizedBox(
-                                      height: 40,
-                                      width: 40,
-                                      child: FlatButton(
-                                        padding: EdgeInsets.zero,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          side: BorderSide(color: Colors.black),
-                                        ),
-                                        color: Color(0xFFF5F6F9),
-                                        onPressed: () {},
-                                        child: Image.asset(
-                                          'assets/images/camera.png',
-                                          width: 20,
-                                          height: 20,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )),
+                      height: 150,
+                      width: 150,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          (_image == null)
+                              ? Image.network(accImg.text)
+                              : Image.file(_image),
+                          Positioned(
+                            left: 100,
+                            bottom: 0,
+                            child: SizedBox(
+                              height: 50,
+                              width: 50,
+                              child: FlatButton(
+                                padding: EdgeInsets.zero,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                  side: BorderSide(color: Colors.black),
+                                ),
+                                color: Color(0xFFF5F6F9),
+                                onPressed: () async {
+                                  final pickedImage = await picker.getImage(
+                                      source: ImageSource.gallery);
+                                  setState(() {
+                                    if (pickedImage != null) {
+                                      _image = File(pickedImage.path);
+                                      Image.file(_image);
+                                      String filename =
+                                          _image.path.split("/").last;
+                                      String urlImg = 'http://' +
+                                          'itoknode' +
+                                          '.comsciproject.com/images/foods/' +
+                                          filename;
+                                      accImg.text = urlImg;
+                                      print("image ::" + filename.toString());
+                                      print("urlImg ::" + urlImg);
+                                    } else {
+                                      accImg.text = BaseNoImage;
+                                    }
+                                  });
+                                },
+                                child: Image.asset(
+                                  'assets/images/camera.png',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     SizedBox(height: 10),
                     Container(
                       padding: EdgeInsets.all(5),
@@ -311,6 +314,7 @@ class _ProfileState extends State<Profile> {
                                       fontWeight: FontWeight.w600)),
                             ),
                             onPressed: () async {
+                              _upload();
                               final MessageModel edit = await editProfile(
                                   accId.text,
                                   accName.text,

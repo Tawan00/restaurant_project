@@ -180,7 +180,7 @@ class _editFoodsState extends State<editFoods> {
                     fit: StackFit.expand,
                     children: [
                       (_image == null)
-                          ? Image.network(food_img.text)
+                          ? Image.network(BaseNoImage)
                           : Image.file(_image),
                       Positioned(
                         left: 180,
