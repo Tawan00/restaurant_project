@@ -148,17 +148,32 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
           itemBuilder: (BuildContext context, int index) {
             return Card(
               child: ListTile(
-                title: Text("รอดำเนินการ",
+                leading: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.receipt_long),
+                  ],
+                ),
+                title: Text(
+                    "${MyOrderData[index].btDate.day}/${MyOrderData[index].btDate.month}/${MyOrderData[index].btDate.year}",
                     style: GoogleFonts.kanit(
-                        textStyle: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.red[400]))),
-                trailing: Text(
-                    "${MyOrderData[index].btDate.day}-${MyOrderData[index].btDate.month}-${MyOrderData[index].btDate.year} / ${MyOrderData[index].btDate.hour + 7}:${MyOrderData[index].btDate.minute}",
+                        fontWeight: FontWeight.w500,
+                        textStyle: TextStyle(color: Colors.black))),
+                subtitle: Text("ใบสั่งจองที่ ${MyOrderData[index].btId}",
                     style: GoogleFonts.kanit(
-                        textStyle: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black54))),
+                        textStyle: TextStyle(color: Colors.black54))),
+                trailing: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text("รอดำเนินการ",
+                        style: GoogleFonts.kanit(
+                            textStyle: TextStyle(color: Colors.red))),
+                    Text("${MyOrderData[index].btTotal} ฿",
+                        style: GoogleFonts.kanit(
+                            fontWeight: FontWeight.w700,
+                            textStyle: TextStyle(color: Colors.black))),
+                  ],
+                ),
               ),
             );
           }),
@@ -173,13 +188,13 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
           child: TextField(
             style: GoogleFonts.kanit(
                 textStyle: TextStyle(
-                    fontWeight: FontWeight.w600, color: Colors.black)),
+                    fontWeight: FontWeight.w400, color: Colors.black)),
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(10.0),
               hintText: "วันที่ หรือ ราคา",
               hintStyle: GoogleFonts.kanit(
                   textStyle: TextStyle(
-                      fontWeight: FontWeight.w600, color: Colors.black54)),
+                      fontWeight: FontWeight.w400, color: Colors.black54)),
               icon: Icon(
                 Icons.search,
               ),
@@ -217,17 +232,33 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                   itemBuilder: (BuildContext context, int index) {
                     return Card(
                       child: ListTile(
-                        title: Text("เสร็จสิ้น",
+                        leading: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.receipt_long),
+                          ],
+                        ),
+                        title: Text(
+                            "${filterItems[index].btDate.day}/${filterItems[index].btDate.month}/${filterItems[index].btDate.year}",
                             style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.green[400]))),
-                        trailing: Text(
-                            "${filterItems[index].btDate.day}-${filterItems[index].btDate.month}-${filterItems[index].btDate.year} / ${filterItems[index].btDate.hour + 7}:${filterItems[index].btDate.minute}",
+                                fontWeight: FontWeight.w500,
+                                textStyle: TextStyle(color: Colors.black))),
+                        subtitle: Text(
+                            "ใบสั่งจองที่ ${filterItems[index].btId}",
                             style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black54))),
+                                textStyle: TextStyle(color: Colors.black54))),
+                        trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text("รายการสำเร็จ",
+                                style: GoogleFonts.kanit(
+                                    textStyle: TextStyle(color: Colors.green))),
+                            Text("${filterItems[index].btTotal} ฿",
+                                style: GoogleFonts.kanit(
+                                    fontWeight: FontWeight.w700,
+                                    textStyle: TextStyle(color: Colors.black))),
+                          ],
+                        ),
                         onTap: () {
                           CreateDialogForgetPass(
                             filterItems[index].btId.toString(),
