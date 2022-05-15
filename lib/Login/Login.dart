@@ -305,14 +305,14 @@ class _LoginState extends State<Login> {
         context: context,
         barrierDismissible: false,
         builder: (context) => AlertDialog(
-          title: Text('title'),
+          title: Text('บัญชีนี้ถูกปิดใช้บริการแล้ว'),
           actions: [
             Center(
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('OK'),
+                child: Text('ตกลง'),
               ),
             )
           ],
