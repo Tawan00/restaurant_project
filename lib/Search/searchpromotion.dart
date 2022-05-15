@@ -78,7 +78,7 @@ class _SearchPromotionState extends State<SearchPromotion> {
               ),
               onChanged: (value) {
                 setState(() {
-                  filterItems = _Prodata.where((u) => (u.proStartDate
+                  filterItems = _Prodata.where((u) => (u.proStartDate.day
                       .toString()
                       .toLowerCase()
                       .contains(value.toLowerCase()))).toList();

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:restaurant_project/Foods/Foods.dart';
 import 'package:restaurant_project/Model/LRModel/LoginModel.dart';
 import 'package:restaurant_project/Model/TableModel/TablesModel.dart';
@@ -174,9 +175,11 @@ class _ReceiveTablesState extends State<ReceiveTables> {
   var checkController = TextEditingController();
   var telController = TextEditingController();
 
+  int groupValue = 0;
   @override
   Widget build(BuildContext context) {
     var now = DateTime.now();
+
     return Scaffold(
       backgroundColor: Color(0xFFFCFAF8),
       appBar: AppBar(
@@ -215,7 +218,7 @@ class _ReceiveTablesState extends State<ReceiveTables> {
           : ListView(
               children: [
                 Container(
-                  height: 610,
+                  height: 700,
                   child: Padding(
                     padding: EdgeInsets.only(
                         top: 16.0, bottom: 16.0, left: 16.0, right: 16.0),
@@ -348,31 +351,11 @@ class _ReceiveTablesState extends State<ReceiveTables> {
                               ),
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
                                   child: Text(
                                     st,
-                                    style: GoogleFonts.kanit(
-                                      textStyle: TextStyle(
-                                          fontSize: 15.0, color: Colors.black),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(left: 20),
-                                  child: Text(
-                                    pks,
-                                    style: GoogleFonts.kanit(
-                                      textStyle: TextStyle(
-                                          fontSize: 15.0, color: Colors.black),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(left: 20),
-                                  child: Text(
-                                    pke,
                                     style: GoogleFonts.kanit(
                                       textStyle: TextStyle(
                                           fontSize: 15.0, color: Colors.black),
@@ -384,44 +367,20 @@ class _ReceiveTablesState extends State<ReceiveTables> {
                             SizedBox(
                               height: 5.0,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    height: 30,
-                                    width: 70,
-                                    child: IconButton(
-                                      icon: Icon(Icons.calendar_today_outlined),
-                                      onPressed: () {
-                                        selectTimePicker(context);
-                                      },
-                                    ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: 30,
+                                  width: 70,
+                                  child: IconButton(
+                                    icon: Icon(Icons.calendar_today_outlined),
+                                    onPressed: () {
+                                      selectTimePicker(context);
+                                    },
                                   ),
-                                  Container(
-                                    height: 30,
-                                    width: 70,
-                                    child: IconButton(
-                                      icon: Icon(Icons.alarm),
-                                      onPressed: () {
-                                        selectTimeStart(context);
-                                      },
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 30,
-                                    width: 70,
-                                    child: IconButton(
-                                      icon: Icon(Icons.alarm),
-                                      onPressed: () {
-                                        selectTimeEnd(context);
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                             SizedBox(
                               height: 5.0,
@@ -433,9 +392,73 @@ class _ReceiveTablesState extends State<ReceiveTables> {
                                 height: 1.0,
                               ),
                             ),
-                            // SizedBox(
-                            //   height: 5.0,
-                            // ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  child: Text(
+                                    "เลือกเวลา",
+                                    style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          fontSize: 15.0, color: Colors.black),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.all(10),
+                                  child: CupertinoSlidingSegmentedControl<int>(
+                                    backgroundColor: CupertinoColors.white,
+                                    thumbColor: CupertinoColors.activeOrange,
+                                    padding: EdgeInsets.all(4),
+                                    groupValue: groupValue,
+                                    children: {
+                                      0: Text("9-11.00"),
+                                      1: Text("11-13.00"),
+                                      2: Text("13-15.00"),
+                                      3: Text("15-17.00"),
+                                    },
+                                    onValueChanged: (groupValue) {
+                                      print(groupValue);
+                                      if (groupValue == 0) {
+                                        pks = "9:00:00";
+                                        pke = "11:00:00";
+                                        print("${pks}-${pke}");
+                                      } else if (groupValue == 1) {
+                                        pks = "11:00:00";
+                                        pke = "13:00:00";
+                                        print("${pks}-${pke}");
+                                      } else if (groupValue == 2) {
+                                        pks = "13:00:00";
+                                        pke = "15:00:00";
+                                        print("${pks}-${pke}");
+                                      } else {
+                                        pks = "15:00:00";
+                                        pke = "17:00:00";
+                                        print("${pks}-${pke}");
+                                      }
+                                      setState(
+                                          () => this.groupValue = groupValue);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Container(
+                                color: orangeColor,
+                                height: 1.0,
+                              ),
+                            ),
                             Padding(
                               padding: EdgeInsets.only(top: 15.0, left: 20.0),
                               child: Text(
@@ -554,4 +577,12 @@ class _ReceiveTablesState extends State<ReceiveTables> {
       bottomNavigationBar: BottomBar(),
     );
   }
+
+  Widget buildSegment(String text) => Container(
+        padding: EdgeInsets.all(12),
+        child: Text(
+          text,
+          style: TextStyle(fontSize: 20),
+        ),
+      );
 }
