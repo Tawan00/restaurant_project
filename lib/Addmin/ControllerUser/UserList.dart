@@ -25,6 +25,7 @@ class _UserListState extends State<UserList> {
   }
 
   String token = "";
+
   Future<Null> getToken() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     token = preferences.getString("token");
@@ -112,13 +113,14 @@ class _UserListState extends State<UserList> {
             )
           : ListView(
               children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
+                Container(
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  child: Container(
                     child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
+                      scrollDirection: Axis.vertical,
                       child: DataTable(
+                        horizontalMargin: 0,
+                        columnSpacing: 0,
                         columns: [
                           DataColumn(
                               label: Text(
@@ -178,6 +180,7 @@ class _UserListState extends State<UserList> {
                                                         UserData[index].accName,
                                                     lname: UserData[index]
                                                         .accSname,
+                                                    img: UserData[index].accImg,
                                                     addr:
                                                         UserData[index].accAddr,
                                                     tel: UserData[index].accTel,
