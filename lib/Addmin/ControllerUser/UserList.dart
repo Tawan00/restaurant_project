@@ -100,7 +100,7 @@ class _UserListState extends State<UserList> {
                       fontWeight: FontWeight.w400, color: Colors.black)),
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(10.0),
-                hintText: "วันที่ หรือ ราคา",
+                hintText: "ชื่อ หรือ นามสกุล",
                 hintStyle: GoogleFonts.kanit(
                     textStyle: TextStyle(
                         fontWeight: FontWeight.w400, color: Colors.black54)),
