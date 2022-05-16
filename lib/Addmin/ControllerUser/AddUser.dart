@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:restaurant_project/Addmin/ControllerUser/UserList.dart';
 import 'package:restaurant_project/Model/AEModel/TkAddModel.dart';
 import 'package:flutter/material.dart';
+import 'package:restaurant_project/Model/MessageModel.dart';
 import 'package:restaurant_project/Model/UserModel/AddUserModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -24,7 +25,7 @@ AdduserModel datamodel;
 TkAddModel tkaddmodel;
 
 class _AddUserState extends State<AddUser> {
-  Future<TkAddModel> add(
+  Future<MessageModel> add(
     String acc_name,
     String acc_sname,
     String acc_img,
@@ -54,7 +55,7 @@ class _AddUserState extends State<AddUser> {
 
     if (response.statusCode == 200) {
       String responseString = response.body;
-      return tkAddModelFromJson(responseString);
+      return messageModelFromJson(responseString);
     } else {
       return null;
     }
@@ -364,7 +365,7 @@ class _AddUserState extends State<AddUser> {
           SizedBox(height: 15.0),
           GestureDetector(
             onTap: () async {
-              final TkAddModel addUser = await add(
+              final MessageModel addUser = await add(
                 nameController.text,
                 snameController.text,
                 imgController.text,

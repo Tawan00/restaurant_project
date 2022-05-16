@@ -102,6 +102,14 @@ class _NavBarState extends State<NavBar> {
                               MaterialPageRoute(builder: (context) => Login()));
                         },
                       ),
+                      ListTile(
+                        leading: Icon(Icons.local_offer_outlined),
+                        title: Text('Promotion'),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SearchPromotion()));
+                        },
+                      ),
                     ],
                   )
                 : ListView(
