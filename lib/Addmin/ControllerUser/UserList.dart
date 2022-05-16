@@ -33,7 +33,7 @@ class _UserListState extends State<UserList> {
   }
 
   List<UserModel> UserData;
-
+  List<UserModel> filterItems;
   Future<Null> GetUser() async {
     var url = "http://itoknode@itoknode.comsciproject.com/user/AllUser";
     final response = await http.get(Uri.parse(url));
@@ -42,6 +42,7 @@ class _UserListState extends State<UserList> {
       setState(() {
         final String responseString = response.body;
         UserData = userModelFromJson(responseString);
+        filterItems = UserData;
       });
     }
     print(UserData);
@@ -89,124 +90,152 @@ class _UserListState extends State<UserList> {
           )
         ],
       ),
-      body: (UserData == null)
-          ? Material(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      // Text(
-                      //   "Initialization",
-                      //   style: TextStyle(
-                      //     fontSize: 32,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
-                      // SizedBox(height: 20),
-                      CircularProgressIndicator()
+      body: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: TextField(
+              style: GoogleFonts.kanit(
+                  textStyle: TextStyle(
+                      fontWeight: FontWeight.w400, color: Colors.black)),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(10.0),
+                hintText: "วันที่ หรือ ราคา",
+                hintStyle: GoogleFonts.kanit(
+                    textStyle: TextStyle(
+                        fontWeight: FontWeight.w400, color: Colors.black54)),
+                icon: Icon(
+                  Icons.search,
+                ),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  filterItems = UserData.where((u) => (u.accName
+                          .toString()
+                          .toLowerCase()
+                          .contains(value.toLowerCase()) ||
+                      u.accSname
+                          .toString()
+                          .toLowerCase()
+                          .contains(value.toLowerCase()))).toList();
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: (UserData == null)
+                ? Material(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[CircularProgressIndicator()],
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(left: 20, right: 20),
+                        child: Container(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: DataTable(
+                              horizontalMargin: 0,
+                              columnSpacing: 0,
+                              columns: [
+                                DataColumn(
+                                    label: Text(
+                                  'ชื่อ',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'นามสกุล',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'แก้ไข',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                              ],
+                              rows: List<DataRow>.generate(
+                                  filterItems.length,
+                                  (index) => DataRow(
+                                        cells: <DataCell>[
+                                          DataCell(Text(
+                                            filterItems[index].accName,
+                                            style: GoogleFonts.kanit(
+                                                textStyle: TextStyle(
+                                                    color: Colors.black)),
+                                          )),
+                                          DataCell(Text(
+                                            filterItems[index].accSname,
+                                            style: GoogleFonts.kanit(
+                                                textStyle: TextStyle(
+                                                    color: Colors.black)),
+                                          )),
+                                          DataCell(ListTile(
+                                            leading: Icon(
+                                              Icons.edit,
+                                              color: Colors.green[600],
+                                            ),
+                                            onTap: () {
+                                              Navigator.of(context).push(MaterialPageRoute(
+                                                  builder: (context) => EditUser(
+                                                      id: filterItems[index]
+                                                          .accId,
+                                                      name: filterItems[index]
+                                                          .accName,
+                                                      lname: filterItems[index]
+                                                          .accSname,
+                                                      img: filterItems[index]
+                                                          .accImg,
+                                                      addr: filterItems[index]
+                                                          .accAddr,
+                                                      tel: filterItems[index]
+                                                          .accTel,
+                                                      email: filterItems[index]
+                                                          .accEmail,
+                                                      username:
+                                                          filterItems[index]
+                                                              .accUser,
+                                                      pass: filterItems[index]
+                                                          .accPass,
+                                                      line: filterItems[index]
+                                                          .accLine,
+                                                      face: filterItems[index]
+                                                          .accFB,
+                                                      typeuser: filterItems[index].accType,
+                                                      status: filterItems[index].accStatus)));
+                                            },
+                                          )),
+                                        ],
+                                      )),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                ],
-              ),
-            )
-          : ListView(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: 20, right: 20),
-                  child: Container(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: DataTable(
-                        horizontalMargin: 0,
-                        columnSpacing: 0,
-                        columns: [
-                          DataColumn(
-                              label: Text(
-                            'ชื่อ',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'นามสกุล',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'แก้ไข',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                        ],
-                        rows: List<DataRow>.generate(
-                            UserData.length,
-                            (index) => DataRow(
-                                  cells: <DataCell>[
-                                    DataCell(Text(
-                                      UserData[index].accName,
-                                      style: GoogleFonts.kanit(
-                                          textStyle:
-                                              TextStyle(color: Colors.black)),
-                                    )),
-                                    DataCell(Text(
-                                      UserData[index].accSname,
-                                      style: GoogleFonts.kanit(
-                                          textStyle:
-                                              TextStyle(color: Colors.black)),
-                                    )),
-                                    DataCell(ListTile(
-                                      leading: Icon(
-                                        Icons.edit,
-                                        color: Colors.green[600],
-                                      ),
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) => EditUser(
-                                                    id: UserData[index].accId,
-                                                    name:
-                                                        UserData[index].accName,
-                                                    lname: UserData[index]
-                                                        .accSname,
-                                                    img: UserData[index].accImg,
-                                                    addr:
-                                                        UserData[index].accAddr,
-                                                    tel: UserData[index].accTel,
-                                                    email: UserData[index]
-                                                        .accEmail,
-                                                    username:
-                                                        UserData[index].accUser,
-                                                    pass:
-                                                        UserData[index].accPass,
-                                                    line:
-                                                        UserData[index].accLine,
-                                                    face: UserData[index].accFB,
-                                                    typeuser:
-                                                        UserData[index].accType,
-                                                    status: UserData[index]
-                                                        .accStatus)));
-                                      },
-                                    )),
-                                  ],
-                                )),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          ),
+        ],
+      ),
     );
   }
 }
