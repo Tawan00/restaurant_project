@@ -23,6 +23,7 @@ class _TableListState extends State<TableList> {
   List<String> tablestatus;
   List<String> tempArray = [];
   List<TableAllModel> _tableallModel;
+  List<TableAllModel> filterItems;
   Future<Null> GetTable() async {
     var url = "http://itoknode@itoknode.comsciproject.com/table/ShowTable";
     final response = await http.get(Uri.parse(url));
@@ -31,6 +32,7 @@ class _TableListState extends State<TableList> {
       setState(() {
         final String responseString = response.body;
         _tableallModel = tableallModelFromJson(responseString);
+        filterItems = _tableallModel;
       });
       print(_tableallModel.length);
     }
@@ -83,183 +85,196 @@ class _TableListState extends State<TableList> {
           ),
         ],
       ),
-      body: (_tableallModel == null)
-          ? Material(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      // Text(
-                      //   "Initialization",
-                      //   style: TextStyle(
-                      //     fontSize: 32,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
-                      // SizedBox(height: 20),
-                      CircularProgressIndicator()
-                    ],
-                  ),
-                ],
+      body: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: TextField(
+              style: GoogleFonts.kanit(
+                  textStyle: TextStyle(
+                      fontWeight: FontWeight.w400, color: Colors.black)),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(10.0),
+                hintText: "เบอร์โต๊ะ",
+                hintStyle: GoogleFonts.kanit(
+                    textStyle: TextStyle(
+                        fontWeight: FontWeight.w400, color: Colors.black54)),
+                icon: Icon(
+                  Icons.search,
+                ),
               ),
-            )
-          : ListView(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: [
-                          DataColumn(
-                              label: Text(
-                            'โต๊ะที่',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'สถานะ',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'แก้ไข',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                        ],
-                        rows: List<DataRow>.generate(
-                            _tableallModel.length,
-                            (index) => DataRow(
-                                  cells: <DataCell>[
-                                    DataCell(Center(
-                                      child: Text(
-                                        '${_tableallModel[index].tbId}',
-                                        style: GoogleFonts.kanit(
-                                            textStyle:
-                                                TextStyle(color: Colors.black)),
-                                      ),
-                                    )),
-                                    DataCell(
-                                      Center(
-                                        child: Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: LiteRollingSwitch(
-                                              value: (_tableallModel[index]
-                                                          .tbStatus !=
-                                                      0)
-                                                  ? false
-                                                  : true,
-                                              textOn: "ว่าง",
-                                              textOff: "ไม่ว่าง",
-                                              colorOn: Colors.green,
-                                              colorOff: Colors.redAccent,
-                                              iconOn: Icons.done,
-                                              iconOff: Icons.alarm_off,
-                                              textSize: 13.0,
-                                              onChanged: (bool position) async {
-                                                if (position == true) {
-                                                  final MessageModel UPDATE =
-                                                      await updateNewstatus(
-                                                          _tableallModel[index]
-                                                              .tbId
-                                                              .toString(),
-                                                          "0");
-                                                  if (UPDATE.message ==
-                                                      'Success') {
-                                                    print("Updete Success");
-                                                  } else {
-                                                    print('Update Failed');
-                                                  }
-                                                } else {
-                                                  final MessageModel UPDATE =
-                                                      await updateNewstatus(
-                                                          _tableallModel[index]
-                                                              .tbId
-                                                              .toString(),
-                                                          "1");
-                                                  if (UPDATE.message ==
-                                                      'Success') {
-                                                    print("Updete Success");
-                                                  } else {
-                                                    print('Update Failed');
-                                                  }
-                                                }
-
-                                                // if (position == true) {
-                                                //   final MessageModel UPDATE =
-                                                //       await updateStatus("1");
-                                                //   if (UPDATE.message ==
-                                                //       "Success") {
-                                                //     print("Updete Success");
-                                                //   } else {
-                                                //     print('Update Failed');
-                                                //   }
-                                                // } else {
-                                                //   final MessageModel UPDATE =
-                                                //       await updateStatus("0");
-                                                //   if (UPDATE.message ==
-                                                //       "Success") {
-                                                //     print("Updete Success");
-                                                //   } else {
-                                                //     print('Update Failed');
-                                                //   }
-                                                // }
-                                              },
+              onChanged: (value) {
+                setState(() {
+                  filterItems = _tableallModel
+                      .where((u) => (u.tbId
+                          .toString()
+                          .toLowerCase()
+                          .contains(value.toLowerCase())))
+                      .toList();
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: (_tableallModel == null)
+                ? Material(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[CircularProgressIndicator()],
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              columns: [
+                                DataColumn(
+                                    label: Text(
+                                  'โต๊ะที่',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'สถานะ',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'แก้ไข',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                              ],
+                              rows: List<DataRow>.generate(
+                                  filterItems.length,
+                                  (index) => DataRow(
+                                        cells: <DataCell>[
+                                          DataCell(Center(
+                                            child: Text(
+                                              '${filterItems[index].tbId}',
+                                              style: GoogleFonts.kanit(
+                                                  textStyle: TextStyle(
+                                                      color: Colors.black)),
+                                            ),
+                                          )),
+                                          DataCell(
+                                            Center(
+                                              child: Container(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(5.0),
+                                                  child: LiteRollingSwitch(
+                                                    value: (filterItems[index]
+                                                                .tbStatus !=
+                                                            0)
+                                                        ? false
+                                                        : true,
+                                                    textOn: "ว่าง",
+                                                    textOff: "ไม่ว่าง",
+                                                    colorOn: Colors.green,
+                                                    colorOff: Colors.redAccent,
+                                                    iconOn: Icons.done,
+                                                    iconOff: Icons.alarm_off,
+                                                    textSize: 13.0,
+                                                    onChanged:
+                                                        (bool position) async {
+                                                      if (position == true) {
+                                                        final MessageModel
+                                                            UPDATE =
+                                                            await updateNewstatus(
+                                                                filterItems[
+                                                                        index]
+                                                                    .tbId
+                                                                    .toString(),
+                                                                "0");
+                                                        if (UPDATE.message ==
+                                                            'Success') {
+                                                          print(
+                                                              "Updete Success");
+                                                        } else {
+                                                          print(
+                                                              'Update Failed');
+                                                        }
+                                                      } else {
+                                                        final MessageModel
+                                                            UPDATE =
+                                                            await updateNewstatus(
+                                                                filterItems[
+                                                                        index]
+                                                                    .tbId
+                                                                    .toString(),
+                                                                "1");
+                                                        if (UPDATE.message ==
+                                                            'Success') {
+                                                          print(
+                                                              "Updete Success");
+                                                        } else {
+                                                          print(
+                                                              'Update Failed');
+                                                        }
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                    DataCell(Center(
-                                      child: ListTile(
-                                        leading: Icon(
-                                          Icons.edit,
-                                          color: Colors.green[600],
-                                        ),
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      editTable(
-                                                          tb_id: _tableallModel[
-                                                                  index]
-                                                              .tbId,
-                                                          tb_count:
-                                                              _tableallModel[
-                                                                      index]
-                                                                  .tbCount,
-                                                          tb_status:
-                                                              _tableallModel[
-                                                                      index]
-                                                                  .tbStatus)));
-                                        },
-                                      ),
-                                    )),
-                                  ],
-                                )),
+                                          DataCell(Center(
+                                            child: ListTile(
+                                              leading: Icon(
+                                                Icons.edit,
+                                                color: Colors.green[600],
+                                              ),
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) => editTable(
+                                                            tb_id: filterItems[
+                                                                    index]
+                                                                .tbId,
+                                                            tb_count:
+                                                                filterItems[
+                                                                        index]
+                                                                    .tbCount,
+                                                            tb_status:
+                                                                filterItems[
+                                                                        index]
+                                                                    .tbStatus)));
+                                              },
+                                            ),
+                                          )),
+                                        ],
+                                      )),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ],
-            ),
+          ),
+        ],
+      ),
     );
   }
 }

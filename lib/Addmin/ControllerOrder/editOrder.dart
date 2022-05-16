@@ -50,7 +50,8 @@ class _editOrderState extends State<editOrder> {
   int selectvalue;
   String dropdownValue = 'เลือกโต๊ะ';
   List numbertable;
-
+  Color greenColor = Color(0xFF5B8842);
+  Color orangeColor = Color(0xFFF17532);
   Future<EditModel> EditOrder(String bt_id, String tb_id) async {
     final String url =
         "http://itoknode@itoknode.comsciproject.com/bookor/UpdateOrder";
@@ -86,7 +87,7 @@ class _editOrderState extends State<editOrder> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightBlueAccent[400],
+        backgroundColor: orangeColor,
         elevation: 0,
         centerTitle: true,
         title: Text(
@@ -163,8 +164,13 @@ class _editOrderState extends State<editOrder> {
                                           child: Container(
                                             padding: EdgeInsets.all(10),
                                             child: TextField(
+                                              enabled: false,
                                               controller: accName,
                                               decoration: InputDecoration(
+                                                suffixIcon: Icon(
+                                                  Icons.check,
+                                                  color: Colors.green[700],
+                                                ),
                                                 border: OutlineInputBorder(),
                                               ),
                                             ),
@@ -186,8 +192,13 @@ class _editOrderState extends State<editOrder> {
                                           child: Container(
                                             padding: EdgeInsets.all(10),
                                             child: TextField(
+                                              enabled: false,
                                               controller: btCount,
                                               decoration: InputDecoration(
+                                                suffixIcon: Icon(
+                                                  Icons.check,
+                                                  color: Colors.green[700],
+                                                ),
                                                 border: OutlineInputBorder(),
                                               ),
                                             ),
@@ -209,8 +220,13 @@ class _editOrderState extends State<editOrder> {
                                           child: Container(
                                             padding: EdgeInsets.all(10),
                                             child: TextField(
+                                              enabled: false,
                                               controller: tbcheckin,
                                               decoration: InputDecoration(
+                                                suffixIcon: Icon(
+                                                  Icons.check,
+                                                  color: Colors.green[700],
+                                                ),
                                                 border: OutlineInputBorder(),
                                               ),
                                             ),
@@ -273,40 +289,52 @@ class _editOrderState extends State<editOrder> {
                                 ),
                               ),
                             ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 120,
+                                  height: 45,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      final EditModel edit = await EditOrder(
+                                          btId.text, tbtable.text);
+                                      if (edit.message == "Success") {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TableOrderList()));
+                                      }
+                                    },
+                                    child: Container(
+                                      height: 50,
+                                      child: Material(
+                                        borderRadius:
+                                            BorderRadius.circular(25.0),
+                                        shadowColor: Colors.orangeAccent,
+                                        color: orangeColor,
+                                        elevation: 7.0,
+                                        child: Center(
+                                          child: Text(
+                                            'ตกลง',
+                                            style: GoogleFonts.kanit(
+                                                textStyle: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.w600)),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 120,
-                      height: 45,
-                      child: RaisedButton(
-                        textColor: Colors.white,
-                        color: Colors.blue,
-                        child: Text(
-                          'บันทึก',
-                          style: GoogleFonts.kanit(
-                              textStyle: TextStyle(color: Colors.white)),
-                        ),
-                        onPressed: () async {
-                          final EditModel edit =
-                              await EditOrder(btId.text, tbtable.text);
-                          if (edit.message == "Success") {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => TableOrderList()));
-                          }
-                        },
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),

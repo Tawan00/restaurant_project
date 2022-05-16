@@ -163,9 +163,6 @@ class _editTableState extends State<editTable> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 30,
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
