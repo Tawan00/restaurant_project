@@ -148,6 +148,8 @@ class _ReviewPageState extends State<ReviewPage> {
                     itemBuilder: (BuildContext context, index) {
                       return Card(
                         child: ListTile(
+                          enabled: true,
+                          dense: true,
                           leading: (filterItems[index].accImg == null ||
                                   filterItems[index].accImg == "")
                               ? Icon(

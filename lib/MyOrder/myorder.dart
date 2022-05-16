@@ -83,18 +83,18 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.lightBlueAccent[400],
+          backgroundColor: Color(0xFFFCFAF8),
           elevation: 0,
           centerTitle: true,
           title: Text(
             "ออเดอร์ของฉัน",
             style:
-                GoogleFonts.prompt(textStyle: TextStyle(color: Colors.white)),
+                GoogleFonts.prompt(textStyle: TextStyle(color: Colors.black)),
           ),
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios,
-              color: Colors.white,
+              color: Colors.black,
             ),
             onPressed: () {
               Navigator.of(context)
@@ -109,14 +109,14 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                   "กำลังดำเนินการ",
                   style: GoogleFonts.kanit(
                       textStyle: TextStyle(
-                          fontWeight: FontWeight.w600, color: Colors.white)),
+                          fontWeight: FontWeight.w600, color: Colors.black)),
                 ),
               ),
               Tab(
                 child: Text("ตอบรับแล้ว",
                     style: GoogleFonts.kanit(
                         textStyle: TextStyle(
-                            fontWeight: FontWeight.w600, color: Colors.white))),
+                            fontWeight: FontWeight.w600, color: Colors.black))),
               ),
             ],
           ),

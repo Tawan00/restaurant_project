@@ -293,8 +293,8 @@ class _Foods extends State<Foods> with SingleTickerProviderStateMixin {
                 padding: EdgeInsets.all(5.0),
               ),
               Container(
-                height: 75.0,
-                width: 75.0,
+                height: 80.0,
+                width: 80.0,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                       image: NetworkImage(imgPath), fit: BoxFit.contain),
