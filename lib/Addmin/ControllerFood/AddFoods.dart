@@ -108,9 +108,11 @@ class _AddFoodsState extends State<AddFoods> {
 
   @override
   Widget build(BuildContext context) {
+    Color greenColor = Color(0xFF5B8842);
+    Color orangeColor = Color(0xFFF17532);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightBlueAccent[400],
+        backgroundColor: orangeColor,
         elevation: 0,
         centerTitle: true,
         title: Text(
@@ -143,6 +145,7 @@ class _AddFoodsState extends State<AddFoods> {
           : ListView(
               children: [
                 Container(
+                  height: 650,
                   child: Padding(
                     padding: EdgeInsets.all(15),
                     child: InkWell(
@@ -346,73 +349,89 @@ class _AddFoodsState extends State<AddFoods> {
                                 ),
                               ),
                             ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 120,
+                                  height: 45,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      print("type_id:" + type_id.text);
+                                      print("food_name:" + food_name.text);
+                                      print("food_img:" + food_img.text);
+                                      print("food_price:" + food_price.text);
+                                      print("food_status:" + food_status.text);
+
+                                      if (type_id.text.isEmpty ||
+                                          food_name.text.isEmpty ||
+                                          food_price.text.isEmpty ||
+                                          food_status.text.isEmpty) {
+                                        showEnterDialog();
+                                      } else if (food_img.text.isEmpty) {
+                                        food_img.text = BaseNoImage;
+
+                                        _upload();
+                                        final TkAddModel add = await AddFoods(
+                                            type_id.text,
+                                            food_name.text,
+                                            food_img.text,
+                                            food_price.text,
+                                            food_status.text);
+                                        print(add.message);
+                                        if (add.message == "Success") {
+                                          showPassDialog();
+                                        } else {
+                                          showFaildDialog();
+                                        }
+                                      } else {
+                                        _upload();
+                                        final TkAddModel add = await AddFoods(
+                                            type_id.text,
+                                            food_name.text,
+                                            food_img.text,
+                                            food_price.text,
+                                            food_status.text);
+                                        print(add.message);
+                                        if (add.message == "Success") {
+                                          showPassDialog();
+                                        } else {
+                                          showFaildDialog();
+                                        }
+                                      }
+                                    },
+                                    child: Container(
+                                      height: 50,
+                                      child: Material(
+                                        borderRadius:
+                                            BorderRadius.circular(25.0),
+                                        shadowColor: Colors.orangeAccent,
+                                        color: orangeColor,
+                                        elevation: 7.0,
+                                        child: Center(
+                                          child: Text(
+                                            'ตกลง',
+                                            style: GoogleFonts.kanit(
+                                                textStyle: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.w600)),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
                     ),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 120,
-                      height: 45,
-                      child: RaisedButton(
-                        textColor: Colors.white,
-                        color: Colors.blue,
-                        child: Text(
-                          'บันทึก',
-                          style: GoogleFonts.kanit(
-                              textStyle: TextStyle(color: Colors.white)),
-                        ),
-                        onPressed: () async {
-                          print("type_id:" + type_id.text);
-                          print("food_name:" + food_name.text);
-                          print("food_img:" + food_img.text);
-                          print("food_price:" + food_price.text);
-                          print("food_status:" + food_status.text);
-
-                          if (type_id.text.isEmpty ||
-                              food_name.text.isEmpty ||
-                              food_price.text.isEmpty ||
-                              food_status.text.isEmpty) {
-                            showEnterDialog();
-                          } else if (food_img.text.isEmpty) {
-                            food_img.text = BaseNoImage;
-
-                            _upload();
-                            final TkAddModel add = await AddFoods(
-                                type_id.text,
-                                food_name.text,
-                                food_img.text,
-                                food_price.text,
-                                food_status.text);
-                            print(add.message);
-                            if (add.message == "Success") {
-                              showPassDialog();
-                            } else {
-                              showFaildDialog();
-                            }
-                          } else {
-                            _upload();
-                            final TkAddModel add = await AddFoods(
-                                type_id.text,
-                                food_name.text,
-                                food_img.text,
-                                food_price.text,
-                                food_status.text);
-                            print(add.message);
-                            if (add.message == "Success") {
-                              showPassDialog();
-                            } else {
-                              showFaildDialog();
-                            }
-                          }
-                        },
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),

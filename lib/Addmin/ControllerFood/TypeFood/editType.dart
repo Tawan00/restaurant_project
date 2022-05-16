@@ -107,16 +107,22 @@ class _editTypeState extends State<editType> {
                                     child: Container(
                                       padding: EdgeInsets.all(10),
                                       child: TextField(
+                                        enabled: false,
                                         controller: tfId,
                                         decoration: InputDecoration(
-                                            labelStyle: GoogleFonts.kanit(
-                                                textStyle: TextStyle(
-                                                    color: Colors.green[700])),
-                                            fillColor: Colors.black12,
-                                            filled: true,
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20))),
+                                          labelStyle: GoogleFonts.kanit(
+                                              textStyle: TextStyle(
+                                                  color: Colors.green[700])),
+                                          fillColor: Colors.black12,
+                                          filled: true,
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          suffixIcon: Icon(
+                                            Icons.check,
+                                            color: Colors.green[700],
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),

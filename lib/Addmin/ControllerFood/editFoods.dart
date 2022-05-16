@@ -136,7 +136,7 @@ class _editFoodsState extends State<editFoods> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "แก้ไขประเภทอาหาร",
+          "แก้ไขข้อมูลอาหาร",
           style: GoogleFonts.prompt(textStyle: TextStyle(color: Colors.white)),
         ),
         leading: IconButton(

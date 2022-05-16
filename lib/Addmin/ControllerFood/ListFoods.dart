@@ -127,30 +127,6 @@ class _ListFoodsState extends State<ListFoods> {
                 ),
               ),
             ),
-            Card(
-              margin: EdgeInsets.all(8.0),
-              child: InkWell(
-                onTap: () {},
-                splashColor: Colors.green,
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.storefront,
-                        size: 70.0,
-                        color: Colors.green[700],
-                      ),
-                      Text("อาหารโปรโมชัน",
-                          style: GoogleFonts.kanit(
-                            textStyle: TextStyle(
-                                color: Color(0xFFD17E50), fontSize: 17.0),
-                          )),
-                    ],
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),

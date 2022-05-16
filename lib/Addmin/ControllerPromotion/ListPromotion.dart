@@ -31,6 +31,7 @@ class _ListProState extends State<ListPro> {
   var sd;
   var ed;
   var st = TextEditingController();
+  List<PromotionModel> filterItems;
   List<PromotionModel> _Prodata;
   Future<Null> GetPro() async {
     var url = "http://itoknode.comsciproject.com/pro/ProAll";
@@ -40,11 +41,7 @@ class _ListProState extends State<ListPro> {
       setState(() {
         final String responseString = response.body;
         _Prodata = promotionModelFromJson(responseString);
-        // startdate = _Prodata[0].proStartDate;
-        // enddate = _Prodata[0].proEndDate;
-        // sd = startdate.split("T");
-        // ed = enddate.split("T");
-        // date.text = "${sd[0]} - ${ed[0]}";
+        filterItems = _Prodata;
       });
     }
     print(_Prodata);
@@ -85,93 +82,120 @@ class _ListProState extends State<ListPro> {
           ),
         ],
       ),
-      body: (_Prodata == null)
-          ? Material(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      // Text(
-                      //   "Initialization",
-                      //   style: TextStyle(
-                      //     fontSize: 32,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
-                      // SizedBox(height: 20),
-                      CircularProgressIndicator()
-                    ],
-                  ),
-                ],
+      body: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: TextField(
+              style: GoogleFonts.kanit(
+                  textStyle: TextStyle(
+                      fontWeight: FontWeight.w400, color: Colors.black)),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(10.0),
+                hintText: "ชื่อ หรือ เวลาเริ่มต้นหรือเวลาสิ้นสุด",
+                hintStyle: GoogleFonts.kanit(
+                    textStyle: TextStyle(
+                        fontWeight: FontWeight.w400, color: Colors.black54)),
+                icon: Icon(
+                  Icons.search,
+                ),
               ),
-            )
-          : ListView(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: [
-                          DataColumn(
-                              label: Text(
-                            'ชื่อโปรโมชัน',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                          DataColumn(
-                              label: Center(
-                            child: Text(
-                              'ช่วงเวลา',
-                              style: GoogleFonts.kanit(
-                                  textStyle: TextStyle(
-                                      color: Color(0xFFD17E50),
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w600)),
-                            ),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'สถานะ',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'แก้ไข',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'อาหาร',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                        ],
-                        rows: List<DataRow>.generate(
-                            _Prodata.length,
-                            (index) => DataRow(
+              onChanged: (value) {
+                setState(() {
+                  filterItems = _Prodata.where((u) => (u.proName
+                          .toString()
+                          .toLowerCase()
+                          .contains(value.toLowerCase()) ||
+                      u.proEndDate.day
+                          .toString()
+                          .toLowerCase()
+                          .contains(value.toLowerCase()) ||
+                      u.proStartDate.day
+                          .toString()
+                          .toLowerCase()
+                          .contains(value.toLowerCase()))).toList();
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: (_Prodata == null)
+                ? Material(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[CircularProgressIndicator()],
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              columns: [
+                                DataColumn(
+                                    label: Text(
+                                  'ชื่อโปรโมชัน',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                                DataColumn(
+                                    label: Center(
+                                  child: Text(
+                                    'ช่วงเวลา',
+                                    style: GoogleFonts.kanit(
+                                        textStyle: TextStyle(
+                                            color: Color(0xFFD17E50),
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.w600)),
+                                  ),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'สถานะ',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'แก้ไข',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'อาหาร',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                              ],
+                              rows: List<DataRow>.generate(
+                                filterItems.length,
+                                (index) => DataRow(
                                   cells: <DataCell>[
                                     DataCell(Container(
                                       child: Text(
-                                        _Prodata[index].proName,
+                                        filterItems[index].proName,
                                         style: GoogleFonts.kanit(
                                             textStyle:
                                                 TextStyle(color: Colors.black)),
@@ -179,14 +203,15 @@ class _ListProState extends State<ListPro> {
                                     )),
                                     DataCell(Center(
                                       child: Text(
-                                        "${_Prodata[index].proStartDate.day}/${_Prodata[index].proStartDate.month}/${_Prodata[index].proStartDate.year} - ${_Prodata[index].proEndDate.day}/${_Prodata[index].proEndDate.month}/${_Prodata[index].proEndDate.year}",
+                                        "${filterItems[index].proStartDate.day}/${_Prodata[index].proStartDate.month}/${_Prodata[index].proStartDate.year} - ${_Prodata[index].proEndDate.day}/${_Prodata[index].proEndDate.month}/${_Prodata[index].proEndDate.year}",
                                         style: GoogleFonts.kanit(
                                             textStyle:
                                                 TextStyle(color: Colors.black)),
                                       ),
                                     )),
                                     DataCell(Center(
-                                        child: (_Prodata[index].proStatus == 1)
+                                        child: (filterItems[index].proStatus ==
+                                                1)
                                             ? Text(
                                                 "ไม่ใช้งาน",
                                                 style: GoogleFonts.kanit(
@@ -200,70 +225,79 @@ class _ListProState extends State<ListPro> {
                                                         color:
                                                             Colors.green[700])),
                                               ))),
-                                    DataCell(Center(
-                                      child: ListTile(
-                                        leading: Icon(
-                                          Icons.edit,
-                                          color: Colors.green[600],
-                                        ),
-                                        onTap: () {
-                                          Navigator.of(context)
-                                              .push(MaterialPageRoute(
-                                                  builder: (context) => editPro(
-                                                        pro_id: _Prodata[index]
-                                                            .proId,
-                                                        pro_name:
-                                                            _Prodata[index]
-                                                                .proName,
-                                                        pro_desc:
-                                                            _Prodata[index]
-                                                                .proDesc,
-                                                        pro_discount:
-                                                            _Prodata[index]
-                                                                .proDiscount,
-                                                        pro_start_date:
-                                                            _Prodata[index]
-                                                                .proStartDate
-                                                                .toString(),
-                                                        pro_end_date:
-                                                            _Prodata[index]
-                                                                .proEndDate
-                                                                .toString(),
-                                                        pro_status:
-                                                            _Prodata[index]
-                                                                .proStatus,
-                                                      )));
-                                        },
-                                      ),
-                                    )),
-                                    DataCell(Center(
-                                      child: ListTile(
-                                        leading: Icon(
-                                          Icons.add,
-                                          color: Colors.green[600],
-                                        ),
-                                        onTap: () {
-                                          Navigator.of(context).push(
+                                    DataCell(
+                                      Center(
+                                        child: ListTile(
+                                          leading: Icon(
+                                            Icons.edit,
+                                            color: Colors.green[600],
+                                          ),
+                                          onTap: () {
+                                            Navigator.of(context).push(
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      AddFoodToPro(
-                                                          pro_id:
-                                                              _Prodata[index]
-                                                                  .proId,
-                                                          pro_discount: _Prodata[
-                                                                  index]
-                                                              .proDiscount)));
-                                        },
+                                                builder: (context) => editPro(
+                                                  pro_id:
+                                                      filterItems[index].proId,
+                                                  pro_name: filterItems[index]
+                                                      .proName,
+                                                  pro_desc: filterItems[index]
+                                                      .proDesc,
+                                                  pro_discount:
+                                                      filterItems[index]
+                                                          .proDiscount,
+                                                  pro_start_date:
+                                                      filterItems[index]
+                                                          .proStartDate
+                                                          .toString(),
+                                                  pro_end_date:
+                                                      filterItems[index]
+                                                          .proEndDate
+                                                          .toString(),
+                                                  pro_status: filterItems[index]
+                                                      .proStatus,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ),
-                                    )),
+                                    ),
+                                    DataCell(
+                                      Center(
+                                        child: ListTile(
+                                          leading: Icon(
+                                            Icons.add,
+                                            color: Colors.green[600],
+                                          ),
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AddFoodToPro(
+                                                        pro_id:
+                                                            filterItems[index]
+                                                                .proId,
+                                                        pro_discount:
+                                                            filterItems[index]
+                                                                .proDiscount),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
                                   ],
-                                )),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ],
-            ),
+          ),
+        ],
+      ),
     );
   }
 }

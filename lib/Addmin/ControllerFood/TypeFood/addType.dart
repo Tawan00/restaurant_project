@@ -54,7 +54,7 @@ class _addTypeState extends State<addType> {
       body: ListView(
         children: [
           Container(
-            height: 400,
+            height: 250,
             child: Padding(
               padding: EdgeInsets.only(
                   top: 16.0, bottom: 16.0, left: 16.0, right: 16.0),
@@ -117,7 +117,7 @@ class _addTypeState extends State<addType> {
                         ),
                       ),
                       SizedBox(
-                        height: 30,
+                        height: 10,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

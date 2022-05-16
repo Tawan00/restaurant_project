@@ -132,7 +132,7 @@ class _editProState extends State<editPro> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "แก้ไขประเภทอาหาร",
+          "แก้ไขข้อมูลโปรโมชัน",
           style: GoogleFonts.prompt(textStyle: TextStyle(color: Colors.white)),
         ),
         leading: IconButton(
@@ -149,7 +149,7 @@ class _editProState extends State<editPro> {
       body: ListView(
         children: [
           Container(
-            height: 650,
+            height: 600,
             child: Padding(
               padding: EdgeInsets.only(
                   top: 16.0, bottom: 16.0, left: 16.0, right: 16.0),

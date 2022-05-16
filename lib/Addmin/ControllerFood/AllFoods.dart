@@ -21,6 +21,8 @@ class _AllFoodsState extends State<AllFoods> {
 
   Color greenColor = Color(0xFF5B8842);
   Color orangeColor = Color(0xFFF17532);
+
+  List<FoodsModel> filterItems;
   List<FoodsModel> items;
   Future<Null> Getfoods() async {
     var url = "http://itoknode@itoknode.comsciproject.com/foods/Foods";
@@ -29,6 +31,7 @@ class _AllFoodsState extends State<AllFoods> {
       setState(() {
         final String responseString = response.body;
         items = foodsModelFromJson(responseString);
+        filterItems = items;
       });
     }
   }
@@ -68,141 +71,176 @@ class _AllFoodsState extends State<AllFoods> {
           ),
         ],
       ),
-      body: (items == null)
-          ? Material(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      // Text(
-                      //   "Initialization",
-                      //   style: TextStyle(
-                      //     fontSize: 32,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
-                      // SizedBox(height: 20),
-                      CircularProgressIndicator()
+      body: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: TextField(
+              style: GoogleFonts.kanit(
+                  textStyle: TextStyle(
+                      fontWeight: FontWeight.w400, color: Colors.black)),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(10.0),
+                hintText: "ชื่อ หรือ ราคา",
+                hintStyle: GoogleFonts.kanit(
+                    textStyle: TextStyle(
+                        fontWeight: FontWeight.w400, color: Colors.black54)),
+                icon: Icon(
+                  Icons.search,
+                ),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  filterItems = items
+                      .where((u) => (u.foodName
+                              .toString()
+                              .toLowerCase()
+                              .contains(value.toLowerCase()) ||
+                          u.foodPrice
+                              .toString()
+                              .toLowerCase()
+                              .contains(value.toLowerCase())))
+                      .toList();
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: (items == null)
+                ? Material(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[CircularProgressIndicator()],
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(left: 10, right: 10),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              // columnSpacing: 0,
+                              columns: [
+                                DataColumn(
+                                    label: Text(
+                                  'รหัส',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'ชื่อ',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'ราคา',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'แก้ไข',
+                                  style: GoogleFonts.kanit(
+                                      textStyle: TextStyle(
+                                          color: Color(0xFFD17E50),
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w600)),
+                                )),
+                              ],
+                              rows: List<DataRow>.generate(
+                                  filterItems.length,
+                                  (index) => DataRow(
+                                        cells: <DataCell>[
+                                          DataCell(Center(
+                                            child: Text(
+                                              "${filterItems[index].foodId}",
+                                              style: GoogleFonts.kanit(
+                                                  textStyle: TextStyle(
+                                                      color: Colors.black)),
+                                            ),
+                                          )),
+                                          DataCell(Container(
+                                            width: 100,
+                                            child: Text(
+                                              filterItems[index].foodName,
+                                              style: GoogleFonts.kanit(
+                                                  textStyle: TextStyle(
+                                                      color: Colors.black)),
+                                            ),
+                                          )),
+                                          DataCell(Center(
+                                            child: Text(
+                                              "${filterItems[index].foodPrice}",
+                                              style: GoogleFonts.kanit(
+                                                  textStyle: TextStyle(
+                                                      color: Colors.black)),
+                                            ),
+                                          )),
+                                          DataCell(Center(
+                                            child: ListTile(
+                                              leading: Icon(
+                                                Icons.edit,
+                                                color: Colors.green[600],
+                                              ),
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder:
+                                                            (context) =>
+                                                                editFoods(
+                                                                  food_id: filterItems[
+                                                                          index]
+                                                                      .foodId,
+                                                                  type_id: filterItems[
+                                                                          index]
+                                                                      .typeId,
+                                                                  food_name: filterItems[
+                                                                          index]
+                                                                      .foodName,
+                                                                  food_img: filterItems[
+                                                                          index]
+                                                                      .foodImg,
+                                                                  food_price: filterItems[
+                                                                          index]
+                                                                      .foodPrice,
+                                                                  food_status:
+                                                                      filterItems[
+                                                                              index]
+                                                                          .foodStatus,
+                                                                )));
+                                              },
+                                            ),
+                                          )),
+                                        ],
+                                      )),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                ],
-              ),
-            )
-          : ListView(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: 10, right: 10),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        // columnSpacing: 0,
-                        columns: [
-                          DataColumn(
-                              label: Text(
-                            'รหัส',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'ชื่อ',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'ราคา',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'แก้ไข',
-                            style: GoogleFonts.kanit(
-                                textStyle: TextStyle(
-                                    color: Color(0xFFD17E50),
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w600)),
-                          )),
-                        ],
-                        rows: List<DataRow>.generate(
-                            items.length,
-                            (index) => DataRow(
-                                  cells: <DataCell>[
-                                    DataCell(Center(
-                                      child: Text(
-                                        "${items[index].foodId}",
-                                        style: GoogleFonts.kanit(
-                                            textStyle:
-                                                TextStyle(color: Colors.black)),
-                                      ),
-                                    )),
-                                    DataCell(Container(
-                                      width: 100,
-                                      child: Text(
-                                        items[index].foodName,
-                                        style: GoogleFonts.kanit(
-                                            textStyle:
-                                                TextStyle(color: Colors.black)),
-                                      ),
-                                    )),
-                                    DataCell(Center(
-                                      child: Text(
-                                        "${items[index].foodPrice}",
-                                        style: GoogleFonts.kanit(
-                                            textStyle:
-                                                TextStyle(color: Colors.black)),
-                                      ),
-                                    )),
-                                    DataCell(Center(
-                                      child: ListTile(
-                                        leading: Icon(
-                                          Icons.edit,
-                                          color: Colors.green[600],
-                                        ),
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      editFoods(
-                                                        food_id:
-                                                            items[index].foodId,
-                                                        type_id:
-                                                            items[index].typeId,
-                                                        food_name: items[index]
-                                                            .foodName,
-                                                        food_img: items[index]
-                                                            .foodImg,
-                                                        food_price: items[index]
-                                                            .foodPrice,
-                                                        food_status:
-                                                            items[index]
-                                                                .foodStatus,
-                                                      )));
-                                        },
-                                      ),
-                                    )),
-                                  ],
-                                )),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          ),
+        ],
+      ),
     );
   }
 }
