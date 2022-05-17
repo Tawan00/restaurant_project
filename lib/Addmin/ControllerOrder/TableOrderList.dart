@@ -1,3 +1,4 @@
+import 'package:restaurant_project/Addmin/ControllerOrder/main_order.dart';
 import 'package:restaurant_project/Addmin/MainAdmin.dart';
 import 'package:restaurant_project/Addmin/ControllerOrder/editOrder.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,7 @@ class _TableOrderListState extends State<TableOrderList> {
             ),
             onPressed: () {
               Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => MainAdmin()));
+                  .push(MaterialPageRoute(builder: (context) => MainOrder()));
             },
           ),
         ),

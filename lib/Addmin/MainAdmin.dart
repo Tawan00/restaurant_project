@@ -1,5 +1,6 @@
 import 'package:restaurant_project/Addmin/ControllDataShop/DataStore.dart';
 import 'package:restaurant_project/Addmin/ControllerFood/ListFoods.dart';
+import 'package:restaurant_project/Addmin/ControllerOrder/main_order.dart';
 import 'package:restaurant_project/Addmin/ControllerTable/TableList.dart';
 import 'package:restaurant_project/Addmin/ControllerOrder/TableOrderList.dart';
 import 'package:restaurant_project/Addmin/ControllerUser/UserList.dart';
@@ -234,7 +235,7 @@ class _MainAdminState extends State<MainAdmin> {
                       child: InkWell(
                         onTap: () async {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => TableOrderList()));
+                              builder: (context) => MainOrder()));
                         },
                         splashColor: Colors.green,
                         child: Center(
