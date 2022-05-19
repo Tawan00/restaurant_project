@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:restaurant_project/Foods/Foods.dart';
 import 'package:restaurant_project/Model/LRModel/LoginModel.dart';
 import 'package:restaurant_project/Model/TableModel/TablesModel.dart';
@@ -74,7 +75,7 @@ class _ReceiveTablesState extends State<ReceiveTables> {
     getToken();
   }
 
-  int dataToChange = 0;
+  int dataToChange = 1;
 
   Color greenColor = Color(0xFF5B8842);
   Color orangeColor = Color(0xFFF17532);
@@ -87,8 +88,8 @@ class _ReceiveTablesState extends State<ReceiveTables> {
   void changedataReMov() {
     setState(() {
       dataToChange -= 1;
-      if (dataToChange <= 0) {
-        dataToChange = 0;
+      if (dataToChange <= 1) {
+        dataToChange = 1;
       }
     });
   }
@@ -99,7 +100,7 @@ class _ReceiveTablesState extends State<ReceiveTables> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: date,
-        firstDate: DateTime(1940),
+        firstDate: DateTime.now().subtract(Duration(days: 0)),
         lastDate: DateTime(2030));
     if (picked != null && picked != date) {
       setState(() {
@@ -178,7 +179,6 @@ class _ReceiveTablesState extends State<ReceiveTables> {
   int groupValue = 0;
   @override
   Widget build(BuildContext context) {
-    var now = DateTime.now();
 
     return Scaffold(
       backgroundColor: Color(0xFFFCFAF8),
@@ -475,6 +475,10 @@ class _ReceiveTablesState extends State<ReceiveTables> {
                                 padding: EdgeInsets.all(10),
                                 child: TextField(
                                   controller: accTel,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(10)
+                                  ],
                                   style: GoogleFonts.kanit(
                                       textStyle:
                                           TextStyle(color: Colors.black)),
@@ -503,35 +507,42 @@ class _ReceiveTablesState extends State<ReceiveTables> {
                                       endController.text = pke;
                                       checkController.text = st;
 
+                                      if(checkController.text.contains('เลือกวันที่')){
+                                        showEnterDialog(context);
+                                        print("EMPTY");
+                                      }else{
+                                        final TkTablesModel booktable =
+                                        await CheckIn(
+                                            userModel[0].accId.toString(),
+                                            countController.text,
+                                            startController.text,
+                                            endController.text,
+                                            checkController.text,
+                                            accTel.text);
+
+                                        if (booktable.message == "Success") {
+                                          SharedPreferences preferences =
+                                          await SharedPreferences
+                                              .getInstance();
+                                          preferences.setString(
+                                              "token", booktable.token);
+                                          Navigator.of(context)
+                                              .pushAndRemoveUntil(
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext
+                                                  context) =>
+                                                      Foods()),
+                                                  (route) => false);
+                                        }
+                                      }
                                       print(accId.text);
                                       print(countController.text);
                                       print(startController.text);
                                       print(endController.text);
                                       print(checkController.text);
                                       print(accTel.text);
-                                      final TkTablesModel booktable =
-                                          await CheckIn(
-                                              userModel[0].accId.toString(),
-                                              countController.text,
-                                              startController.text,
-                                              endController.text,
-                                              checkController.text,
-                                              accTel.text);
 
-                                      if (booktable.message == "Success") {
-                                        SharedPreferences preferences =
-                                            await SharedPreferences
-                                                .getInstance();
-                                        preferences.setString(
-                                            "token", booktable.token);
-                                        Navigator.of(context)
-                                            .pushAndRemoveUntil(
-                                                MaterialPageRoute(
-                                                    builder: (BuildContext
-                                                            context) =>
-                                                        Foods()),
-                                                (route) => false);
-                                      }
+
                                     },
                                     child: Container(
                                       height: 50,
@@ -578,11 +589,32 @@ class _ReceiveTablesState extends State<ReceiveTables> {
     );
   }
 
-  Widget buildSegment(String text) => Container(
-        padding: EdgeInsets.all(12),
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 20),
-        ),
-      );
+  Future showEnterDialog(BuildContext context) => showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      title: Center(
+          child: Text(
+            'กรุณาเลือกวันที่',
+            style: GoogleFonts.kanit(
+                textStyle: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.w600)),
+          )),
+      actions: [
+        FlatButton(
+          child: Text(
+            'ตกลง',
+            style: GoogleFonts.kanit(
+                textStyle: TextStyle(
+                  color: Colors.green[700],
+                  fontWeight: FontWeight.w600,
+                )),
+          ),
+          onPressed: () async {
+            Navigator.pop(context);
+          },
+        )
+      ],
+    ),
+  );
 }

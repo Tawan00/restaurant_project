@@ -1,8 +1,11 @@
+import 'package:flutter/services.dart';
 import 'package:restaurant_project/Addmin/ControllerTable/TableList.dart';
 import 'package:restaurant_project/Model/AEModel/TkAddModel.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
+
+import 'dialogTable.dart';
 
 class AddTable extends StatefulWidget {
   @override
@@ -97,6 +100,10 @@ class _AddTableState extends State<AddTable> {
                                       padding: EdgeInsets.all(10),
                                       child: TextField(
                                         controller: tbNumber,
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.digitsOnly,
+                                          LengthLimitingTextInputFormatter(3),],
                                         decoration: InputDecoration(
                                             labelStyle: GoogleFonts.kanit(
                                                 textStyle: TextStyle(
@@ -126,6 +133,10 @@ class _AddTableState extends State<AddTable> {
                                       padding: EdgeInsets.all(10),
                                       child: TextField(
                                         controller: tbCount,
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.digitsOnly,
+                                          LengthLimitingTextInputFormatter(2),],
                                         decoration: InputDecoration(
                                             labelStyle: GoogleFonts.kanit(
                                                 textStyle: TextStyle(
@@ -155,10 +166,18 @@ class _AddTableState extends State<AddTable> {
                             height: 45,
                             child: GestureDetector(
                               onTap: () async {
-                                final TkAddModel add =
-                                    await Add(tbNumber.text, tbCount.text);
-                                if (add.message == "Success") {
-                                  showEndDialog();
+                                if(tbNumber.text.isEmpty || tbCount.text.isEmpty){
+                                  showEnterAllDialog(context);
+                                }else if(int.parse(tbCount.text) <= 0){
+                                  showAddEnterCountDialog(context);
+                                } else{
+                                  final TkAddModel add =
+                                      await Add(tbNumber.text, tbCount.text);
+                                  if (add.message == "Success") {
+                                    showAddEndDialog(context);
+                                  }else{
+                                    showAddFailDialog(context);
+                                  }
                                 }
                               },
                               child: Container(
@@ -194,33 +213,5 @@ class _AddTableState extends State<AddTable> {
     );
   }
 
-  Future showEndDialog() => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Center(
-              child: Text(
-            'เพิ่มข้อมูลเสร็จสมบูรณ์',
-            style: GoogleFonts.kanit(
-                textStyle: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600)),
-          )),
-          actions: [
-            FlatButton(
-              child: Text(
-                'ตกลง',
-                style: GoogleFonts.kanit(
-                    textStyle: TextStyle(
-                  color: Colors.green[700],
-                  fontWeight: FontWeight.w600,
-                )),
-              ),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => TableList()));
-              },
-            )
-          ],
-        ),
-      );
+
 }

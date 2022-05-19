@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:restaurant_project/Addmin/ControllerTable/addTable.dart';
 import 'package:restaurant_project/Addmin/ControllerTable/editTable.dart';
 import 'package:restaurant_project/Addmin/MainAdmin.dart';
@@ -90,6 +91,10 @@ class _TableListState extends State<TableList> {
           Container(
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
             child: TextField(
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(3),],
               style: GoogleFonts.kanit(
                   textStyle: TextStyle(
                       fontWeight: FontWeight.w400, color: Colors.black)),

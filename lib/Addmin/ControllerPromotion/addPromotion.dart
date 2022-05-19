@@ -1,8 +1,12 @@
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:restaurant_project/Addmin/ControllerPromotion/ListPromotion.dart';
 import 'package:restaurant_project/Model/AEModel/TkAddModel.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
+
+import 'dialogPro.dart';
 
 class AddPro extends StatefulWidget {
   @override
@@ -39,7 +43,7 @@ class _AddProState extends State<AddPro> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: date,
-        firstDate: DateTime(1940),
+        firstDate: DateTime.now().subtract(Duration(days: 0)),
         lastDate: DateTime(2030));
     if (picked != null && picked != date) {
       setState(() {
@@ -54,7 +58,7 @@ class _AddProState extends State<AddPro> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: date2,
-        firstDate: DateTime(1940),
+        firstDate: DateTime.now().subtract(Duration(days: 0)),
         lastDate: DateTime(2030));
     if (picked != null && picked != date2) {
       setState(() {
@@ -189,6 +193,10 @@ class _AddProState extends State<AddPro> {
                           padding: EdgeInsets.all(5),
                           child: TextField(
                             controller: proDis,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(3)
+                            ],
                             decoration: InputDecoration(
                                 labelStyle: GoogleFonts.kanit(
                                     textStyle:
@@ -342,18 +350,39 @@ class _AddProState extends State<AddPro> {
                                 proStart.text = st;
                                 proEnd.text = et;
 
-                                final TkAddModel add = await Add(
-                                    proName.text,
-                                    proDesc.text,
-                                    proDis.text,
-                                    proStart.text,
-                                    proEnd.text,
-                                    proStatus.text);
-                                if (add.message == "Success") {
-                                  showPassDialog();
-                                } else {
-                                  showFaildDialog();
+                                if(proName.text.isEmpty || proDesc.text.isEmpty || proDis.text.isEmpty || proStart.text.isEmpty || proEnd.text.isEmpty){
+                                  showEnterDialog(context);
                                 }
+                                else{
+                                  DateTime statDate = new DateFormat("yyyy-MM-dd").parse(proStart.text);
+                                  DateTime endDate = new DateFormat("yyyy-MM-dd").parse(proEnd.text);
+                                  if(int.parse(proDis.text)>100){
+                                    showProDisDialog(context);
+                                  }
+                                  else if(endDate.isBefore(statDate)){
+                                    showDateDialog(context);
+                                  }
+                                  else{
+                                    final TkAddModel add = await Add(
+                                        proName.text,
+                                        proDesc.text,
+                                        proDis.text,
+                                        proStart.text,
+                                        proEnd.text,
+                                        proStatus.text);
+                                    if (add.message == "Success") {
+                                      showPassDialog(context);
+                                    } else {
+                                      showFaildDialog(context);
+                                    }
+                                  }
+                                }
+
+
+
+
+
+
                               },
                               child: Container(
                                 height: 50,
@@ -388,61 +417,4 @@ class _AddProState extends State<AddPro> {
     );
   }
 
-  Future showPassDialog() => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Center(
-              child: Text(
-            'เพิ่มข้อมูลเสร็จสมบูรณ์',
-            style: GoogleFonts.kanit(
-                textStyle: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600)),
-          )),
-          actions: [
-            FlatButton(
-              child: Text(
-                'ตกลง',
-                style: GoogleFonts.kanit(
-                    textStyle: TextStyle(
-                  color: Colors.green[700],
-                  fontWeight: FontWeight.w600,
-                )),
-              ),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => ListPro()));
-              },
-            )
-          ],
-        ),
-      );
-  Future showFaildDialog() => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Center(
-              child: Text(
-            'มีข้อมูลอยู่แล้ว ไม่สามารถเพิ่มไขได้',
-            style: GoogleFonts.kanit(
-                textStyle: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600)),
-          )),
-          actions: [
-            FlatButton(
-              child: Text(
-                'ตกลง',
-                style: GoogleFonts.kanit(
-                    textStyle: TextStyle(
-                  color: Colors.green[700],
-                  fontWeight: FontWeight.w600,
-                )),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        ),
-      );
 }

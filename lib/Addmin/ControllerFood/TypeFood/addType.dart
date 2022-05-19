@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
+import 'dialogType.dart';
+
 class addType extends StatefulWidget {
   @override
   _addTypeState createState() => _addTypeState();
@@ -127,9 +129,15 @@ class _addTypeState extends State<addType> {
                             height: 45,
                             child: GestureDetector(
                               onTap: () async {
-                                final TkAddModel add = await Add(tfName.text);
-                                if (add.message == "Success") {
-                                  showEndDialog();
+                                if(tfName.text.isEmpty){
+                                  showEnterAllDialog(context);
+                                }else{
+                                  final TkAddModel add = await Add(tfName.text);
+                                  if (add.message == "Success") {
+                                    showEndDialog(context);
+                                  }else{
+                                    showFailDialog(context);
+                                  }
                                 }
                               },
                               child: Container(
@@ -165,33 +173,5 @@ class _addTypeState extends State<addType> {
     );
   }
 
-  Future showEndDialog() => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Center(
-              child: Text(
-            'เพิ่มข้อมูลเสร็จสมบูรณ์',
-            style: GoogleFonts.kanit(
-                textStyle: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600)),
-          )),
-          actions: [
-            FlatButton(
-              child: Text(
-                'ตกลง',
-                style: GoogleFonts.kanit(
-                    textStyle: TextStyle(
-                  color: Colors.green[700],
-                  fontWeight: FontWeight.w600,
-                )),
-              ),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => TypeFoods()));
-              },
-            )
-          ],
-        ),
-      );
+
 }

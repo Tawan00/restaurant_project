@@ -1,8 +1,12 @@
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:restaurant_project/Addmin/ControllerPromotion/ListPromotion.dart';
 import 'package:restaurant_project/Model/AEModel/EditModel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+
+import 'dialogPro.dart';
 
 class editPro extends StatefulWidget {
   @override
@@ -14,6 +18,7 @@ class editPro extends StatefulWidget {
   String pro_start_date;
   String pro_end_date;
   int pro_status;
+
   editPro(
       {this.pro_id,
       this.pro_name,
@@ -25,6 +30,11 @@ class editPro extends StatefulWidget {
 }
 
 class _editProState extends State<editPro> {
+  DateTime ConDateStart;
+  DateTime ConDateEnd;
+  var startdate;
+  var enddate;
+
   @override
   void initState() {
     super.initState();
@@ -33,14 +43,19 @@ class _editProState extends State<editPro> {
     proDesc.text = this.widget.pro_desc;
     proDis.text = this.widget.pro_discount.toString();
     proStatus.text = this.widget.pro_status.toString();
-    startdate = this.widget.pro_start_date;
-    // enddate = this.widget.pro_end_date;
-    // sd = startdate.split("T");
-    // ed = enddate.split("T");
-    // st = sd[0];
-    // et = ed[0];
-    st = "เลือกเวลาเริ่ม";
-    et = "เลือกเวลาสิ้นสุด";
+    ConvertDate();
+
+    print("A:"+startdate);
+    print("B:"+enddate);
+    st = startdate;
+    et = enddate;
+  }
+
+  void ConvertDate(){
+    ConDateStart = DateFormat("yyyy-MM-dd").parse(widget.pro_start_date);
+    ConDateEnd = DateFormat("yyyy-MM-dd").parse(widget.pro_end_date);
+    startdate = DateFormat("yyyy-MM-dd").format(ConDateStart);
+    enddate = DateFormat("yyyy-MM-dd").format(ConDateStart);
   }
 
   Color greenColor = Color(0xFF5B8842);
@@ -52,31 +67,30 @@ class _editProState extends State<editPro> {
   var proStart = TextEditingController();
   var proEnd = TextEditingController();
   var proStatus = TextEditingController();
-  var startdate;
-  var enddate;
+
   var sd;
   var ed;
   String dropdownValue = 'เปิดใช้งาน';
   List<String> typestatus = ["เปิดใช้งาน", "ปิดใช้งาน"];
 
   Future<EditModel> Edit(
-      String pro_id,
-      String pro_name,
-      String pro_desc,
-      String pro_discount,
-      String pro_start_date,
-      String pro_end_date,
-      String pro_status) async {
+      String proId,
+      String proName,
+      String proDesc,
+      String proDiscount,
+      String proStartDate,
+      String proEndDate,
+      String proStatus) async {
     final String url =
         "http://itoknode@itoknode.comsciproject.com/pro/UpdatePro";
     final response = await http.post(Uri.parse(url), body: {
-      "pro_id": pro_id,
-      "pro_name": pro_name,
-      "pro_desc": pro_desc,
-      "pro_discount": pro_discount,
-      "pro_start_date": pro_start_date,
-      "pro_end_date": pro_end_date,
-      "pro_status": pro_status
+      "pro_id": proId,
+      "pro_name": proName,
+      "pro_desc": proDesc,
+      "pro_discount": proDiscount,
+      "pro_start_date": proStartDate,
+      "pro_end_date": proEndDate,
+      "pro_status": proStatus
     });
 
     print(response.statusCode);
@@ -90,18 +104,21 @@ class _editProState extends State<editPro> {
   }
 
   DateTime date = DateTime.now();
+  DateTime date2 = DateTime.now();
   var st;
   var et;
+
   Future<Null> selectTimePicker(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: date,
-        firstDate: DateTime(1940),
+        firstDate: DateTime.now().subtract(Duration(days: 0)),
         lastDate: DateTime(2030));
     if (picked != null && picked != date) {
       setState(() {
         date = picked;
         st = "${date.year}-${date.month}-${date.day}";
+        proStart.text = "${date.year}-${date.month}-${date.day}";
         print("date " + st);
       });
     }
@@ -110,13 +127,14 @@ class _editProState extends State<editPro> {
   Future<Null> selectTimePicker2(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: date,
-        firstDate: DateTime(1940),
+        initialDate: date2,
+        firstDate: DateTime.now().subtract(Duration(days: 0)),
         lastDate: DateTime(2030));
-    if (picked != null && picked != date) {
+    if (picked != null && picked != date2) {
       setState(() {
-        date = picked;
-        et = "${date.year}-${date.month}-${date.day}";
+        date2 = picked;
+        et = "${date2.year}-${date2.month}-${date2.day}";
+        proEnd.text = "${date.year}-${date.month}-${date.day}";
         print("date " + et);
       });
     }
@@ -237,6 +255,10 @@ class _editProState extends State<editPro> {
                           padding: EdgeInsets.all(5),
                           child: TextField(
                             controller: proDis,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(3)
+                            ],
                             decoration: InputDecoration(
                                 labelStyle: GoogleFonts.kanit(
                                     textStyle:
@@ -370,18 +392,42 @@ class _editProState extends State<editPro> {
                                 proStart.text = st;
                                 proEnd.text = et;
 
-                                final EditModel edit = await Edit(
-                                    proId.text,
-                                    proName.text,
-                                    proDesc.text,
-                                    proDis.text,
-                                    proStart.text,
-                                    proEnd.text,
-                                    proStatus.text);
-                                if (edit.message == "Success") {
-                                  showPassDialog();
+                                print(proStart.text);
+                                print(proEnd.text);
+                                if (proName.text.isEmpty ||
+                                    proDesc.text.isEmpty ||
+                                    proDis.text.isEmpty ||
+                                    proStart.text.isEmpty ||
+                                    proEnd.text.isEmpty) {
+                                  showEnterDialog(context);
                                 } else {
-                                  showFaildDialog();
+                                  DateTime statDate =
+                                      new DateFormat("yyyy-MM-dd")
+                                          .parse(proStart.text);
+                                  DateTime endDate =
+                                      new DateFormat("yyyy-MM-dd")
+                                          .parse(proEnd.text);
+
+                                  if(int.parse(proDis.text)>100){
+                                    showProDisDialog(context);
+                                  }
+                                  else if (endDate.isBefore(statDate)) {
+                                    showDateDialog(context);
+                                  }else{
+                                    final EditModel edit = await Edit(
+                                        proId.text,
+                                        proName.text,
+                                        proDesc.text,
+                                        proDis.text,
+                                        proStart.text,
+                                        proEnd.text,
+                                        proStatus.text);
+                                    if (edit.message == "Success") {
+                                      showEditPassDialog(context);
+                                    } else {
+                                      showEditFailDialog(context);
+                                    }
+                                  }
                                 }
                               },
                               child: Container(
@@ -416,62 +462,4 @@ class _editProState extends State<editPro> {
       ),
     );
   }
-
-  Future showPassDialog() => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Center(
-              child: Text(
-            'แก้ไขข้อมูลเสร็จสมบูรณ์',
-            style: GoogleFonts.kanit(
-                textStyle: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600)),
-          )),
-          actions: [
-            FlatButton(
-              child: Text(
-                'ตกลง',
-                style: GoogleFonts.kanit(
-                    textStyle: TextStyle(
-                  color: Colors.green[700],
-                  fontWeight: FontWeight.w600,
-                )),
-              ),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => ListPro()));
-              },
-            )
-          ],
-        ),
-      );
-  Future showFaildDialog() => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Center(
-              child: Text(
-            'มีข้อมูลอยู่แล้ว ไม่สามารถแก้ไขได้',
-            style: GoogleFonts.kanit(
-                textStyle: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600)),
-          )),
-          actions: [
-            FlatButton(
-              child: Text(
-                'ตกลง',
-                style: GoogleFonts.kanit(
-                    textStyle: TextStyle(
-                  color: Colors.green[700],
-                  fontWeight: FontWeight.w600,
-                )),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        ),
-      );
 }

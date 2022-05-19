@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
+import 'dialogType.dart';
+
 class editType extends StatefulWidget {
   @override
   _editTypeState createState() => _editTypeState();
@@ -129,7 +131,7 @@ class _editTypeState extends State<editType> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 20.0),
                                     child: Text(
-                                      'ชื่ออาหาร',
+                                      'ชื่อประเภทอาหาร',
                                       style: GoogleFonts.kanit(
                                         textStyle: TextStyle(
                                             color: Colors.black,
@@ -172,11 +174,21 @@ class _editTypeState extends State<editType> {
                             height: 45,
                             child: GestureDetector(
                               onTap: () async {
-                                final EditModel edit =
-                                    await Edit(tfId.text, tfName.text);
-                                if (edit.message == "Success") {
-                                  showEndDialog();
+                                try{
+                                  if(tfName.text.isEmpty){
+                                    showEnterAllDialog(context);
+                                  }else{
+                                    final EditModel edit = await Edit(tfId.text, tfName.text);
+                                    if (edit.message == "Success") {
+                                      showEditEndDialog(context);
+                                    }else{
+                                      showFailDialog(context);
+                                    }
+                                  }
+                                }catch (e){
+                                  showFailDialog(context);
                                 }
+
                               },
                               child: Container(
                                 height: 50,
@@ -211,33 +223,5 @@ class _editTypeState extends State<editType> {
     );
   }
 
-  Future showEndDialog() => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Center(
-              child: Text(
-            'แก้ไขข้อมูลเสร็จสมบูรณ์',
-            style: GoogleFonts.kanit(
-                textStyle: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600)),
-          )),
-          actions: [
-            FlatButton(
-              child: Text(
-                'ตกลง',
-                style: GoogleFonts.kanit(
-                    textStyle: TextStyle(
-                  color: Colors.green[700],
-                  fontWeight: FontWeight.w600,
-                )),
-              ),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => TypeFoods()));
-              },
-            )
-          ],
-        ),
-      );
+
 }

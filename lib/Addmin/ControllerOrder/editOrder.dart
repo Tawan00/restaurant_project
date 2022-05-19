@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurant_project/Model/TableModel/TableAllModel.dart';
 
+import 'dialogOrder.dart';
+
 class editOrder extends StatefulWidget {
   @override
   _editOrderState createState() => _editOrderState();
@@ -297,14 +299,19 @@ class _editOrderState extends State<editOrder> {
                                   height: 45,
                                   child: GestureDetector(
                                     onTap: () async {
-                                      final EditModel edit = await EditOrder(
-                                          btId.text, tbtable.text);
-                                      if (edit.message == "Success") {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    TableOrderList()));
+                                      if(tbtable.text.isEmpty){
+                                        showEnterAllDialog(context);
+                                      }else{
+                                        final EditModel edit = await EditOrder(
+                                            btId.text, tbtable.text);
+                                        if (edit.message == "Success") {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      TableOrderList()));
+                                        }
                                       }
+
                                     },
                                     child: Container(
                                       height: 50,

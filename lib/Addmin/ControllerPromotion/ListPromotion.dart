@@ -92,7 +92,7 @@ class _ListProState extends State<ListPro> {
                       fontWeight: FontWeight.w400, color: Colors.black)),
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(10.0),
-                hintText: "ชื่อ หรือ เวลาเริ่มต้นหรือเวลาสิ้นสุด",
+                hintText: "ชื่อโปรโมชัน",
                 hintStyle: GoogleFonts.kanit(
                     textStyle: TextStyle(
                         fontWeight: FontWeight.w400, color: Colors.black54)),

@@ -180,7 +180,7 @@ class _editFoodsState extends State<editFoods> {
                     fit: StackFit.expand,
                     children: [
                       (_image == null)
-                          ? Image.network(BaseNoImage)
+                          ? Image.network(food_img.text)
                           : Image.file(_image),
                       Positioned(
                         left: 180,
@@ -357,6 +357,9 @@ class _editFoodsState extends State<editFoods> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20))),
                       onPressed: () async {
+                        setState(() {
+
+                        });
                         print("food_id :" + food_id.text);
                         print("type_id :" + type_id.text);
                         print("food_name :" + food_name.text);

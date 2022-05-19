@@ -77,7 +77,7 @@ class _MainAdminState extends State<MainAdmin> {
       body: ListView(
         children: [
           Container(
-            padding: EdgeInsets.only(left: 30.0, right: 30.0),
+            padding: EdgeInsets.all(30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -116,6 +116,7 @@ class _MainAdminState extends State<MainAdmin> {
                 ),
                 GridView.count(
                   crossAxisCount: 2,
+                  primary: false,
                   shrinkWrap: true,
                   children: [
                     Card(

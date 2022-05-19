@@ -1,8 +1,11 @@
+import 'package:flutter/services.dart';
 import 'package:restaurant_project/Addmin/ControllerTable/TableList.dart';
 import 'package:restaurant_project/Model/AEModel/EditModel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+
+import 'dialogTable.dart';
 
 class editTable extends StatefulWidget {
   @override
@@ -116,6 +119,10 @@ class _editTableState extends State<editTable> {
                                       padding: EdgeInsets.all(10),
                                       child: TextField(
                                         controller: tbCount,
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.digitsOnly,
+                                          LengthLimitingTextInputFormatter(2),],
                                         decoration: InputDecoration(
                                             labelStyle: GoogleFonts.kanit(
                                                 textStyle: TextStyle(
@@ -145,6 +152,10 @@ class _editTableState extends State<editTable> {
                                       padding: EdgeInsets.all(10),
                                       child: TextField(
                                         controller: tbStatus,
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.digitsOnly,
+                                          LengthLimitingTextInputFormatter(2),],
                                         decoration: InputDecoration(
                                             labelStyle: GoogleFonts.kanit(
                                                 textStyle: TextStyle(
@@ -171,11 +182,24 @@ class _editTableState extends State<editTable> {
                             height: 45,
                             child: GestureDetector(
                               onTap: () async {
-                                final EditModel edit = await Edit(
-                                    tbId.text, tbCount.text, tbStatus.text);
-                                if (edit.message == "Success") {
-                                  showEndDialog();
+
+                                if(tbCount.text.isEmpty || tbStatus.text.isEmpty){
+                                  showEnterAllDialog(context);
+                                }else if(int.parse(tbStatus.text) > 2 ){
+                                  showEditEnterCountDialog(context);
                                 }
+                                else{
+                                  final EditModel edit = await Edit(
+                                      tbId.text, tbCount.text, tbStatus.text);
+                                  if (edit.message == "Success") {
+                                    showEditEndDialog(context);
+                                  }else{
+
+                                  }
+
+                                }
+
+
                               },
                               child: Container(
                                 height: 50,
@@ -210,33 +234,5 @@ class _editTableState extends State<editTable> {
     );
   }
 
-  Future showEndDialog() => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Center(
-              child: Text(
-            'แก้ไขข้อมูลเสร็จสมบูรณ์',
-            style: GoogleFonts.kanit(
-                textStyle: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600)),
-          )),
-          actions: [
-            FlatButton(
-              child: Text(
-                'ตกลง',
-                style: GoogleFonts.kanit(
-                    textStyle: TextStyle(
-                  color: Colors.green[700],
-                  fontWeight: FontWeight.w600,
-                )),
-              ),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => TableList()));
-              },
-            )
-          ],
-        ),
-      );
+
 }

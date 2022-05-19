@@ -9,6 +9,8 @@ import 'package:restaurant_project/Model/FoodModel/FoodsModel.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'dialogFood.dart';
+
 class AddFoods extends StatefulWidget {
   @override
   _AddFoodsState createState() => _AddFoodsState();
@@ -370,7 +372,7 @@ class _AddFoodsState extends State<AddFoods> {
                                           food_name.text.isEmpty ||
                                           food_price.text.isEmpty ||
                                           food_status.text.isEmpty) {
-                                        showEnterDialog();
+                                        showEnterDialog(context);
                                       } else if (food_img.text.isEmpty) {
                                         food_img.text = BaseNoImage;
 
@@ -383,9 +385,9 @@ class _AddFoodsState extends State<AddFoods> {
                                             food_status.text);
                                         print(add.message);
                                         if (add.message == "Success") {
-                                          showPassDialog();
+                                          showPassDialog(context);
                                         } else {
-                                          showFaildDialog();
+                                          showFaildDialog(context);
                                         }
                                       } else {
                                         _upload();
@@ -397,9 +399,9 @@ class _AddFoodsState extends State<AddFoods> {
                                             food_status.text);
                                         print(add.message);
                                         if (add.message == "Success") {
-                                          showPassDialog();
+                                          showPassDialog(context);
                                         } else {
-                                          showFaildDialog();
+                                          showFaildDialog(context);
                                         }
                                       }
                                     },
@@ -438,91 +440,5 @@ class _AddFoodsState extends State<AddFoods> {
     );
   }
 
-  Future showEnterDialog() => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Center(
-              child: Text(
-            'กรุณากรอกข้อมูลให้ครบ',
-            style: GoogleFonts.kanit(
-                textStyle: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600)),
-          )),
-          actions: [
-            FlatButton(
-              child: Text(
-                'ตกลง',
-                style: GoogleFonts.kanit(
-                    textStyle: TextStyle(
-                  color: Colors.green[700],
-                  fontWeight: FontWeight.w600,
-                )),
-              ),
-              onPressed: () async {
-                Navigator.pop(context);
-              },
-            )
-          ],
-        ),
-      );
 
-  Future showPassDialog() => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Center(
-              child: Text(
-            'เพิ่มข้อมูลเสร็จสมบูรณ์',
-            style: GoogleFonts.kanit(
-                textStyle: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600)),
-          )),
-          actions: [
-            FlatButton(
-              child: Text(
-                'ตกลง',
-                style: GoogleFonts.kanit(
-                    textStyle: TextStyle(
-                  color: Colors.green[700],
-                  fontWeight: FontWeight.w600,
-                )),
-              ),
-              onPressed: () async {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => AllFoods()));
-              },
-            )
-          ],
-        ),
-      );
-
-  Future showFaildDialog() => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Center(
-              child: Text(
-            'มีข้อมูลอยู่แล้ว ไม่สามารถเพิ่มไขได้',
-            style: GoogleFonts.kanit(
-                textStyle: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w600)),
-          )),
-          actions: [
-            FlatButton(
-              child: Text(
-                'ตกลง',
-                style: GoogleFonts.kanit(
-                    textStyle: TextStyle(
-                  color: Colors.green[700],
-                  fontWeight: FontWeight.w600,
-                )),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        ),
-      );
 }
