@@ -1,7 +1,9 @@
 import 'package:restaurant_project/Addmin/ControllerUser/AddUser.dart';
 import 'package:restaurant_project/Homepage/HomePage.dart';
+import 'package:restaurant_project/Model/AEModel/EditModel.dart';
 import 'package:restaurant_project/Model/AEModel/TkAddModel.dart';
 import 'package:restaurant_project/Model/ReviewModel/reviewAllModel.dart';
+import 'package:restaurant_project/Model/ReviewModel/reviewModel.dart';
 import 'package:restaurant_project/Model/UserModel/UserModel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,6 +22,7 @@ class _ReviewPageState extends State<ReviewPage> {
     super.initState();
     GetReview();
     getToken();
+    // desc.text
   }
 
   var score = TextEditingController();
@@ -50,14 +53,28 @@ class _ReviewPageState extends State<ReviewPage> {
   Future<Null> GetReview() async {
     var url = "http://itoknode@itoknode.comsciproject.com/review/ShowReviewAll";
     final response = await http.get(Uri.parse(url));
-    //print(response.statusCode);
     print(response.statusCode);
     if (response.statusCode == 200) {
       setState(() {
         final String responseString = response.body;
         DataReview = reviewAllModelFromJson(responseString);
+        print(response.body);
         filterItems = DataReview;
       });
+    }
+  }
+
+  Future<EditModel> editReview(String rv_id, String acc_id, String rv_desc, String rv_score) async {
+    final String url =
+        "http://itoknode@itoknode.comsciproject.com/review/EditReview";
+    final response = await http.post(Uri.parse(url),
+        body: {"rv_id": rv_id,"acc_id": acc_id, "rv_desc": rv_desc, "rv_score": rv_score});
+    print(response.body);
+    if (response.statusCode == 200) {
+      String responseString = response.body;
+      return editModelFromJson(responseString);
+    } else {
+      return null;
     }
   }
 
@@ -148,6 +165,17 @@ class _ReviewPageState extends State<ReviewPage> {
                     itemBuilder: (BuildContext context, index) {
                       return Card(
                         child: ListTile(
+                          onTap: (){
+                            setState(() {
+                              if(filterItems[index].accId == userModel[0].accId && userModel[0].accId == filterItems[index].accId){
+                                desc.text = filterItems[index].rvDesc;
+                                DialogEditReview(filterItems[index].rvId, filterItems[index].accId ,filterItems[index].rvScore, filterItems[index].rvDesc);
+                              }else{
+
+                              }
+                            });
+
+                          },
                           enabled: true,
                           dense: true,
                           leading: (filterItems[index].accImg == null ||
@@ -207,6 +235,195 @@ class _ReviewPageState extends State<ReviewPage> {
   var user = TextEditingController();
   var desc = TextEditingController();
   double rating = 0;
+
+  Future DialogEditReview(int rv_id, int acc_id,double scoreReviewed, String rvDesc) => showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return StatefulBuilder(builder: (context, setState) {
+        return AlertDialog(
+          title: Container(
+            height: 70,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "แก้ไขรีวิว",
+                  style: GoogleFonts.kanit(
+                      textStyle: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      )),
+                ),
+              ],
+            ),
+          ),
+          content: Container(
+            height: 150,
+            child: Column(
+              children: [
+                RatingBar.builder(
+                  initialRating: scoreReviewed,
+                  minRating: 1,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  itemPadding: EdgeInsets.symmetric(horizontal: 3.0),
+                  itemBuilder: (context, _) => Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  onRatingUpdate: (rating) {
+                    setState(() {
+                        score.text = rating.toString();
+                    });
+                  },
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: desc,
+                    decoration: InputDecoration(
+                        labelText: 'กรอกข้อความ',
+                        labelStyle: GoogleFonts.kanit(
+                            textStyle: TextStyle(
+                                fontSize: 15.0,
+                                color: Colors.grey.withOpacity(0.5))),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        icon: Icon(
+                          Icons.email,
+                          size: 20,
+                        )),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            FlatButton(
+              child: Text(
+                'ยกเลิก',
+                style: GoogleFonts.kanit(
+                    textStyle: TextStyle(
+                      color: Colors.red[400],
+                      fontWeight: FontWeight.w600,
+                    )),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(
+                'ยืนยัน',
+                style: GoogleFonts.kanit(
+                    textStyle: TextStyle(
+                      color: Colors.green[400],
+                      fontWeight: FontWeight.w600,
+                    )),
+              ),
+              onPressed: () async {
+                setState((){});
+                if(desc.text.isEmpty){
+                  showEnterDialog();
+                }else if(score.text.isEmpty ){
+                  score.text = scoreReviewed.toString();
+                  final EditModel edit = await editReview(
+                    rv_id.toString(),
+                    acc_id.toString(),
+                    desc.text,
+                    score.text
+                  );
+                  if (edit.message == "Success") {
+                    showEndDialog();
+                  } else {}
+                }
+                else{
+                  print("RVID: "+rv_id.toString());
+                  print("Accid: "+acc_id.toString());
+                  print(score.text);
+                  print(desc.text);
+                  final EditModel edit = await editReview(
+                    rv_id.toString(),
+                    acc_id.toString(),
+                    desc.text,
+                    score.text
+                  );
+                  if (edit.message == "Success") {
+                    showEndDialog();
+                  } else {}
+
+                }
+
+              },
+            ),
+          ],
+        );
+      });
+    }
+  );
+
+  Future showEndDialog() => showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      title: Center(
+          child: Text(
+            'แก้ไขข้อมูลเสร็จสมบูรณ์',
+            style: GoogleFonts.kanit(
+                textStyle: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.w600)),
+          )),
+      actions: [
+        FlatButton(
+          child: Text(
+            'ตกลง',
+            style: GoogleFonts.kanit(
+                textStyle: TextStyle(
+                  color: Colors.green[700],
+                  fontWeight: FontWeight.w600,
+                )),
+          ),
+          onPressed: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => ReviewPage()));
+          },
+        )
+      ],
+    ),
+  );
+
+  Future showEnterDialog() => showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      title: Center(
+          child: Text(
+            'กรุณากรอกข้อมูลให้ครบ',
+            style: GoogleFonts.kanit(
+                textStyle: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.w600)),
+          )),
+      actions: [
+        FlatButton(
+          child: Text(
+            'ตกลง',
+            style: GoogleFonts.kanit(
+                textStyle: TextStyle(
+                  color: Colors.green[700],
+                  fontWeight: FontWeight.w600,
+                )),
+          ),
+          onPressed: () async {
+            Navigator.pop(context);
+          },
+        )
+      ],
+    ),
+  );
+
   Future CreateDialogAddReview() => showDialog(
         context: context,
         barrierDismissible: false,

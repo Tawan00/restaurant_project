@@ -14,6 +14,7 @@ String reviewAllModelToJson(List<ReviewAllModel> data) =>
 class ReviewAllModel {
   ReviewAllModel({
     this.rvId,
+    this.accId,
     this.accName,
     this.accImg,
     this.rvDesc,
@@ -22,6 +23,7 @@ class ReviewAllModel {
   });
 
   int rvId;
+  int accId;
   String accName;
   String accImg;
   String rvDesc;
@@ -30,6 +32,7 @@ class ReviewAllModel {
 
   factory ReviewAllModel.fromJson(Map<String, dynamic> json) => ReviewAllModel(
         rvId: json["rv_id"],
+        accId: json["acc_id"],
         accName: json["acc_name"],
         accImg: json["acc_img"],
         rvDesc: json["rv_desc"],
@@ -39,6 +42,7 @@ class ReviewAllModel {
 
   Map<String, dynamic> toJson() => {
         "rv_id": rvId,
+        "acc_id": accId,
         "acc_name": accName,
         "acc_img": accImg,
         "rv_desc": rvDesc,
