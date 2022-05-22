@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:restaurant_project/Addmin/ControllerUser/UserList.dart';
 import 'package:restaurant_project/Homepage/HomePage.dart';
@@ -110,14 +111,14 @@ class _ProfileState extends State<Profile> {
   File _image;
   final picker = ImagePicker();
   String BaseNoImage =
-      "http://itoknode.comsciproject.com/images/foods/BaseNoImage.png";
+      "http://itoknode.comsciproject.com/images/users/BaseNoImage.png";
 
   _upload() {
     if (_image == null) return "";
     String base64Image = base64Encode(_image.readAsBytesSync());
     String fileName = _image.path.split("/").last;
     print(fileName);
-    http.post("http://itoknode@itoknode.comsciproject.com/foods/images", body: {
+    http.post("http://itoknode@itoknode.comsciproject.com/user/images", body: {
       "image": base64Image,
       "name": fileName,
     }).then((res) {
@@ -204,7 +205,7 @@ class _ProfileState extends State<Profile> {
                                           _image.path.split("/").last;
                                       String urlImg = 'http://' +
                                           'itoknode' +
-                                          '.comsciproject.com/images/foods/' +
+                                          '.comsciproject.com/images/users/' +
                                           filename;
                                       accImg.text = urlImg;
                                       print("image ::" + filename.toString());
@@ -229,16 +230,18 @@ class _ProfileState extends State<Profile> {
                     Container(
                       padding: EdgeInsets.all(5),
                       child: TextField(
+                        enabled: false,
                         controller: accName,
                         decoration: InputDecoration(
                           floatingLabelBehavior: FloatingLabelBehavior.always,
-                          labelText: 'Username',
+                          labelText: 'Name',
                         ),
                       ),
                     ),
                     Container(
                       padding: EdgeInsets.all(5),
                       child: TextField(
+                        enabled: false,
                         controller: accSname,
                         decoration: InputDecoration(
                           floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -250,6 +253,7 @@ class _ProfileState extends State<Profile> {
                       padding: EdgeInsets.all(5),
                       child: TextField(
                         controller: accEmail,
+                        enabled: false,
                         decoration: InputDecoration(
                           floatingLabelBehavior: FloatingLabelBehavior.always,
                           labelText: 'Email',
@@ -261,6 +265,10 @@ class _ProfileState extends State<Profile> {
                       child: TextField(
                         controller: accTel,
                         keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(10),
+                        ],
                         decoration: InputDecoration(
                           floatingLabelBehavior: FloatingLabelBehavior.always,
                           labelText: 'Phone',
