@@ -366,7 +366,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                         trailing: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text("สำเร็จ",
+                            Text("ชำระเงินแล้ว",
                                 style: GoogleFonts.kanit(
                                     textStyle: TextStyle(color: Colors.green))),
                             Text("${filterItems2[index].btTotal} ฿",
