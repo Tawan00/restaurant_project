@@ -148,7 +148,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
             tabs: [
               Tab(
                 child: Text(
-                  "รอดำเนินการ",
+                  "กำลังดำเนินการ",
                   maxLines: 1,
                   softWrap: false,
                   style: GoogleFonts.kanit(
@@ -157,7 +157,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                 ),
               ),
               Tab(
-                child: Text("ทำรายการสำเร็จ",
+                child: Text("เสร็จสิ้น",
                     maxLines: 1,
                     softWrap: false,
                     style: GoogleFonts.kanit(
@@ -165,7 +165,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                             fontWeight: FontWeight.w600, color: Colors.black))),
               ),
               Tab(
-                child: Text("ทำรายการไม่สำเร็จ",maxLines: 1,
+                child: Text("ยกเลิก/ล้มเหลว",maxLines: 1,
                     softWrap: false,
                     style: GoogleFonts.kanit(
                         textStyle: TextStyle(
@@ -264,7 +264,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                       children: [
                         Text("รอดำเนินการ",
                             style: GoogleFonts.kanit(
-                                textStyle: TextStyle(color: Colors.red))),
+                                textStyle: TextStyle(color: Colors.blueAccent))),
                         Text("${filterItems[index].btTotal} ฿",
                             style: GoogleFonts.kanit(
                                 fontWeight: FontWeight.w700,
@@ -366,7 +366,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                         trailing: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text("รายการสำเร็จ",
+                            Text("สำเร็จ",
                                 style: GoogleFonts.kanit(
                                     textStyle: TextStyle(color: Colors.green))),
                             Text("${filterItems2[index].btTotal} ฿",
@@ -465,7 +465,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text("ทำรายการไม่สำเร็จ",
+                        Text("ยกเลิก",
                             style: GoogleFonts.kanit(
                                 textStyle: TextStyle(color: Colors.red))),
                         Text("${filterItemsCancel[index].btTotal} ฿",
