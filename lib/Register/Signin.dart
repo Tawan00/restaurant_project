@@ -20,19 +20,23 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   TextEditingController nameController = TextEditingController();
   TextEditingController snameController = TextEditingController();
+  TextEditingController imgController = TextEditingController();
   TextEditingController userController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  String BaseNoImage =
+      "http://itoknode.comsciproject.com/images/users/BaseNoImage.png";
   Color greenColor = Color(0xFF5B8842);
   Color orangeColor = Color(0xFFF17532);
   TkAddModel tkaddmodel;
-  Future<TkAddModel> registers(String acc_name, String acc_sname,
+  Future<TkAddModel> registers(String acc_name, String acc_sname, String acc_img,
       String acc_email, String acc_user, String acc_pass) async {
     final String url =
         "http://itoknode@itoknode.comsciproject.com/register/regis";
     final response = await http.post(Uri.parse(url), body: {
       "acc_name": acc_name,
       "acc_sname": acc_sname,
+      "acc_img" : acc_img,
       "acc_email": acc_email,
       "acc_user": acc_user,
       "acc_pass": acc_pass
@@ -45,6 +49,40 @@ class _SignInState extends State<SignIn> {
       return null;
     }
   }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFFFCFAF8),
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          "สมัครสมาชิก",
+          style: GoogleFonts.prompt(textStyle: TextStyle(color: Colors.black)),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => Login()));
+          },
+        ),
+      ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Form(
+          child: _buildLoginForm(),
+        ),
+      ),
+    );
+  }
+
 
   _buildLoginForm() {
     return Padding(
@@ -157,21 +195,24 @@ class _SignInState extends State<SignIn> {
           SizedBox(height: 50.0),
           GestureDetector(
             onTap: () async {
-              if (userController.text != "" && passwordController != "") {
+              imgController.text = BaseNoImage;
+              if (userController.text.isNotEmpty && passwordController.text.isNotEmpty && nameController.text.isNotEmpty &&snameController.text.isNotEmpty && emailController.text.isNotEmpty) {
                 final TkAddModel Register = await registers(
                   nameController.text,
                   snameController.text,
+                  imgController.text,
                   emailController.text,
                   userController.text,
                   passwordController.text,
                 );
-
                 if (Register.message == "Success") {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) => Login()));
                 } else {
-                  print("register message:" + Register.message);
+                  showCheckUserAgainDialog(context);
                 }
+              }else{
+                showEnterAllDialog(context);
               }
             },
             child: Container(
@@ -198,35 +239,61 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFFCFAF8),
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          "สมัครสมาชิก",
-          style: GoogleFonts.prompt(textStyle: TextStyle(color: Colors.black)),
-        ),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
+  Future showEnterAllDialog(BuildContext context) => showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      title: Center(
+          child: Text(
+            'กรุณากรอกข้อมูลให้ครบ',
+            style: GoogleFonts.kanit(
+                textStyle: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.w600)),
+          )),
+      actions: [
+        FlatButton(
+          child: Text(
+            'ตกลง',
+            style: GoogleFonts.kanit(
+                textStyle: TextStyle(
+                  color: Colors.green[700],
+                  fontWeight: FontWeight.w600,
+                )),
           ),
-          onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => Login()));
+          onPressed: () async {
+            Navigator.pop(context);
           },
-        ),
-      ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Form(
-          child: _buildLoginForm(),
-        ),
-      ),
-    );
-  }
+        )
+      ],
+    ),
+  );
+
+  Future showCheckUserAgainDialog(BuildContext context) => showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      title: Center(
+          child: Text(
+            'มีผู้ใช้งานนี้แล้ว กรุณากรอกใหม่อีกครั้ง',
+            style: GoogleFonts.kanit(
+                textStyle: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.w600)),
+          )),
+      actions: [
+        FlatButton(
+          child: Text(
+            'ตกลง',
+            style: GoogleFonts.kanit(
+                textStyle: TextStyle(
+                  color: Colors.green[700],
+                  fontWeight: FontWeight.w600,
+                )),
+          ),
+          onPressed: () async {
+            Navigator.pop(context);
+          },
+        )
+      ],
+    ),
+  );
 }
