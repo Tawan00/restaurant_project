@@ -68,7 +68,7 @@ class _SearchPromotionState extends State<SearchPromotion> {
                       fontWeight: FontWeight.w600, color: Colors.black)),
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(10.0),
-                hintText: "กรอกวันที่",
+                hintText: "ชื่อโปรโมชัน หรือ วันที่เริ่มต้น หรือ วันที่สิ้นสุด",
                 hintStyle: GoogleFonts.kanit(
                     textStyle: TextStyle(
                         fontWeight: FontWeight.w600, color: Colors.black54)),
@@ -81,7 +81,14 @@ class _SearchPromotionState extends State<SearchPromotion> {
                   filterItems = _Prodata.where((u) => (u.proStartDate.day
                       .toString()
                       .toLowerCase()
-                      .contains(value.toLowerCase()))).toList();
+                      .contains(value.toLowerCase()) ||
+                      u.proName.toString()
+                          .toLowerCase()
+                          .contains(value.toLowerCase()) ||
+                      u.proEndDate.toString()
+                          .toLowerCase()
+                          .contains(value.toLowerCase())
+                  )).toList();
                 });
               },
             ),
