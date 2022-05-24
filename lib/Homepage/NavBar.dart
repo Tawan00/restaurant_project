@@ -153,7 +153,7 @@ class _NavBarState extends State<NavBar> {
                       ListTile(
                         leading: Icon(Icons.home),
                         title: Text('Home'),
-                        onTap: () => null,
+                        onTap: () => Navigator.of(context).pop(),
                       ),
                       ListTile(
                         leading: Icon(Icons.shopping_cart),
@@ -179,11 +179,11 @@ class _NavBarState extends State<NavBar> {
                                 builder: (context) => ReviewPage()));
                           }),
                       Divider(),
-                      ListTile(
-                        leading: Icon(Icons.settings),
-                        title: Text('Setting'),
-                        onTap: () => null,
-                      ),
+                      // ListTile(
+                      //   leading: Icon(Icons.settings),
+                      //   title: Text('Setting'),
+                      //   onTap: () => null,
+                      // ),
                       ListTile(
                         leading: Icon(Icons.info),
                         title: Text('About'),
