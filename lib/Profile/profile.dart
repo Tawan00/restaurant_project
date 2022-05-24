@@ -215,10 +215,8 @@ class _ProfileState extends State<Profile> {
                                     }
                                   });
                                 },
-                                child: Image.asset(
-                                  'assets/images/camera.png',
-                                  width: 20,
-                                  height: 20,
+                                child: Icon(
+                                  Icons.camera_alt_rounded,
                                 ),
                               ),
                             ),
