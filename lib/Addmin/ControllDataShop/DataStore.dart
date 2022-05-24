@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:restaurant_project/Addmin/MainAdmin.dart';
 import 'package:restaurant_project/Model/MessageModel.dart';
 import 'package:restaurant_project/Model/StroreModel.dart';
@@ -240,6 +241,7 @@ class _DataStoreState extends State<DataStore> {
                                 padding: EdgeInsets.all(10),
                                 child: TextField(
                                   controller: _email,
+                                  keyboardType: TextInputType.emailAddress,
                                   style: GoogleFonts.kanit(
                                       textStyle:
                                           TextStyle(color: Colors.black)),
@@ -260,6 +262,9 @@ class _DataStoreState extends State<DataStore> {
                                 padding: EdgeInsets.all(10),
                                 child: TextField(
                                   controller: _tel,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(10)],
                                   style: GoogleFonts.kanit(
                                       textStyle:
                                           TextStyle(color: Colors.black)),
@@ -297,6 +302,8 @@ class _DataStoreState extends State<DataStore> {
                                                   _tel.text);
                                           if (UPDATE.message == "Success") {
                                             print("Updete Success");
+                                            Navigator.of(context).push(MaterialPageRoute(
+                                                builder: (context) => MainAdmin()));
                                           } else {
                                             print('Update Failed');
                                           }
