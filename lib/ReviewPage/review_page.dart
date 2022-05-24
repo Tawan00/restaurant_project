@@ -223,6 +223,9 @@ class _ReviewPageState extends State<ReviewPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          setState(() {
+
+          });
           CreateDialogAddReview();
         },
         backgroundColor: Color(0xFFF17532),
@@ -312,6 +315,7 @@ class _ReviewPageState extends State<ReviewPage> {
                     )),
               ),
               onPressed: () {
+                desc.text = "";
                 Navigator.of(context).pop();
               },
             ),
@@ -476,21 +480,23 @@ class _ReviewPageState extends State<ReviewPage> {
                     });
                   },
                 ),
-                TextField(
-                  controller: desc,
-                  decoration: InputDecoration(
-                      labelText: 'กรอกข้อความ',
-                      labelStyle: GoogleFonts.kanit(
-                          textStyle: TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.grey.withOpacity(0.5))),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                      ),
-                      icon: Icon(
-                        Icons.email,
-                        size: 20,
-                      )),
+                Expanded(
+                  child: TextField(
+                    controller: desc,
+                    decoration: InputDecoration(
+                        labelText: 'กรอกข้อความ',
+                        labelStyle: GoogleFonts.kanit(
+                            textStyle: TextStyle(
+                                fontSize: 15.0,
+                                color: Colors.grey.withOpacity(0.5))),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        icon: Icon(
+                          Icons.email,
+                          size: 20,
+                        )),
+                  ),
                 ),
               ],
             ),
