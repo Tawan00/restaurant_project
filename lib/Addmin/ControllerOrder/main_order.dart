@@ -1,5 +1,6 @@
 import 'package:restaurant_project/Addmin/ControllerFood/AllFoods.dart';
 import 'package:restaurant_project/Addmin/ControllerOrder/AllOrderTable.dart';
+import 'package:restaurant_project/Addmin/ControllerOrder/ControllerOrderfood/AdminAllBookOrder.dart';
 import 'package:restaurant_project/Addmin/ControllerOrder/TableOrderList.dart';
 import 'package:restaurant_project/Addmin/ControllerPromotion/ListPromotion.dart';
 import 'package:restaurant_project/Addmin/MainAdmin.dart';
@@ -106,8 +107,8 @@ class _MainOrderState extends State<MainOrder> {
               margin: EdgeInsets.all(8.0),
               child: InkWell(
                 onTap: () {
-                  // Navigator.of(context)
-                  //     .push(MaterialPageRoute(builder: (context) => ListPro()));
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => AdminAllBookOrder()));
                 },
                 splashColor: Colors.green,
                 child: Center(
@@ -119,7 +120,7 @@ class _MainOrderState extends State<MainOrder> {
                         size: 70.0,
                         color: Colors.green[700],
                       ),
-                      Text("ยังคิดไม่ออก",
+                      Text("จัดการใบสั่งจองอาหาร",
                           style: GoogleFonts.kanit(
                             textStyle: TextStyle(
                                 color: Color(0xFFD17E50), fontSize: 17.0),

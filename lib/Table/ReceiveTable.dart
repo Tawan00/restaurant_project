@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:restaurant_project/Foods/Foods.dart';
 import 'package:restaurant_project/Model/LRModel/LoginModel.dart';
 import 'package:restaurant_project/Model/TableModel/TablesModel.dart';
@@ -105,7 +107,8 @@ class _ReceiveTablesState extends State<ReceiveTables> {
     if (picked != null && picked != date) {
       setState(() {
         date = picked;
-        st = "${date.year}-${date.month}-${date.day}";
+        print(date);
+        st = "${date.day}-${date.month}-${date.year}";
         print("date " + st);
       });
     }
@@ -409,48 +412,51 @@ class _ReceiveTablesState extends State<ReceiveTables> {
                             SizedBox(
                               height: 5.0,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.all(10),
-                                  child: CupertinoSlidingSegmentedControl<int>(
-                                    backgroundColor: CupertinoColors.white,
-                                    thumbColor: CupertinoColors.activeOrange,
-                                    padding: EdgeInsets.all(4),
-                                    groupValue: groupValue,
-                                    children: {
-                                      0: Text("9-11.00"),
-                                      1: Text("11-13.00"),
-                                      2: Text("13-15.00"),
-                                      3: Text("15-17.00"),
-                                    },
-                                    onValueChanged: (groupValue) {
-                                      print(groupValue);
-                                      if (groupValue == 0) {
-                                        pks = "9:00:00";
-                                        pke = "11:00:00";
-                                        print("${pks}-${pke}");
-                                      } else if (groupValue == 1) {
-                                        pks = "11:00:00";
-                                        pke = "13:00:00";
-                                        print("${pks}-${pke}");
-                                      } else if (groupValue == 2) {
-                                        pks = "13:00:00";
-                                        pke = "15:00:00";
-                                        print("${pks}-${pke}");
-                                      } else {
-                                        pks = "15:00:00";
-                                        pke = "17:00:00";
-                                        print("${pks}-${pke}");
-                                      }
-                                      setState(
-                                          () => this.groupValue = groupValue);
-                                    },
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.all(10),
+                                    child: CupertinoSlidingSegmentedControl<int>(
+                                      backgroundColor: CupertinoColors.white,
+                                      thumbColor: CupertinoColors.activeOrange,
+                                      padding: EdgeInsets.all(4),
+                                      groupValue: groupValue,
+                                      children: {
+                                        0: Text("9.00-11.00"),
+                                        1: Text("11.00-13.00"),
+                                        2: Text("13.00-15.00"),
+                                        3: Text("15.00-17.00"),
+                                      },
+                                      onValueChanged: (groupValue) {
+                                        print(groupValue);
+                                        if (groupValue == 0) {
+                                          pks = "9:00:00";
+                                          pke = "11:00:00";
+                                          print("${pks}-${pke}");
+                                        } else if (groupValue == 1) {
+                                          pks = "11:00:00";
+                                          pke = "13:00:00";
+                                          print("${pks}-${pke}");
+                                        } else if (groupValue == 2) {
+                                          pks = "13:00:00";
+                                          pke = "15:00:00";
+                                          print("${pks}-${pke}");
+                                        } else {
+                                          pks = "15:00:00";
+                                          pke = "17:00:00";
+                                          print("${pks}-${pke}");
+                                        }
+                                        setState(
+                                            () => this.groupValue = groupValue);
+                                      },
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             Padding(
                               padding: EdgeInsets.all(10.0),
@@ -509,8 +515,10 @@ class _ReceiveTablesState extends State<ReceiveTables> {
 
                                       if(checkController.text.contains('เลือกวันที่')){
                                         showEnterDialog(context);
-                                        print("EMPTY");
-                                      }else{
+                                      } else if(accTel.text.isEmpty){
+                                        showEnterTelDialog(context);
+                                      }
+                                      else{
                                         final TkTablesModel booktable =
                                         await CheckIn(
                                             userModel[0].accId.toString(),
@@ -588,6 +596,35 @@ class _ReceiveTablesState extends State<ReceiveTables> {
       bottomNavigationBar: BottomBar(),
     );
   }
+
+  Future showEnterTelDialog(BuildContext context) => showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      title: Center(
+          child: Text(
+            'กรุณากรอกเบอร์ติดต่อ',
+            style: GoogleFonts.kanit(
+                textStyle: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.w600)),
+          )),
+      actions: [
+        FlatButton(
+          child: Text(
+            'ตกลง',
+            style: GoogleFonts.kanit(
+                textStyle: TextStyle(
+                  color: Colors.green[700],
+                  fontWeight: FontWeight.w600,
+                )),
+          ),
+          onPressed: () async {
+            Navigator.pop(context);
+          },
+        )
+      ],
+    ),
+  );
 
   Future showEnterDialog(BuildContext context) => showDialog(
     context: context,
