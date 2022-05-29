@@ -13,55 +13,63 @@ String myOrderModelToJson(List<MyOrderModel> data) =>
 class MyOrderModel {
   MyOrderModel({
     this.btId,
-    this.accId,
+    this.boId,
     this.tbId,
+    this.accName,
     this.btCount,
-    this.btDate,
     this.btStartTime,
     this.btEndTime,
     this.btDateCheckIn,
-    this.btTel,
+    this.btDate,
+    this.foodName,
+    this.foodCount,
     this.btTotal,
     this.btStatus,
   });
 
   int btId;
-  int accId;
+  int boId;
   int tbId;
+  String accName;
   int btCount;
-  DateTime btDate;
   String btStartTime;
   String btEndTime;
   String btDateCheckIn;
-  String btTel;
+  DateTime btDate;
+  String foodName;
+  int foodCount;
   int btTotal;
   int btStatus;
 
   factory MyOrderModel.fromJson(Map<String, dynamic> json) => MyOrderModel(
         btId: json["bt_id"],
-        accId: json["acc_id"],
+        boId: json["bo_id"],
         tbId: json["tb_id"],
+        accName: json["acc_name"],
         btCount: json["bt_count"],
-        btDate: DateTime.parse(json["bt_date"]),
         btStartTime: json["bt_start_time"],
         btEndTime: json["bt_end_time"],
         btDateCheckIn: json["bt_date_check_in"],
-        btTel: json["bt_tel"],
+        btDate: DateTime.parse(json["bt_date"]),
+        foodName: json["food_name"],
+        foodCount: json["food_count"],
         btTotal: json["bt_total"],
         btStatus: json["bt_status"],
       );
 
   Map<String, dynamic> toJson() => {
         "bt_id": btId,
-        "acc_id": accId,
+        "bo_id": boId,
         "tb_id": tbId,
+        "acc_name": accName,
         "bt_count": btCount,
-        "bt_date": btDate.toIso8601String(),
         "bt_start_time": btStartTime,
         "bt_end_time": btEndTime,
         "bt_date_check_in": btDateCheckIn,
-        "bt_tel": btTel,
-        "bt_total": btTel,
+        "bt_date": btDate.toIso8601String(),
+        "food_name": foodName,
+        "food_count": foodCount,
+        "bt_total": btTotal,
         "bt_status": btStatus,
       };
 }
