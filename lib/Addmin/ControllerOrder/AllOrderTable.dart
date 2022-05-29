@@ -38,6 +38,16 @@ class _AllOrderTableState extends State<AllOrderTable>
         final String responseString = response.body;
         _OrderApprove = myOrderModelFromJson(responseString);
         filterItemsApprove = _OrderApprove;
+
+        for (var i = 0; i < _OrderApprove.length; i++) {
+          var num = filterItemsApprove
+              .where((food) => _OrderApprove[i]
+                  .foodName
+                  .toLowerCase()
+                  .contains(_OrderApprove[i].foodName.toLowerCase()))
+              .length;
+          print(num);
+        }
       });
     }
   }
@@ -202,11 +212,13 @@ class _AllOrderTableState extends State<AllOrderTable>
                           CreateDialogForgetPass(
                             _OrderApprove[index].btId.toString(),
                             _OrderApprove[index].tbId.toString(),
-                            _OrderApprove[index].accId.toString(),
+                            _OrderApprove[index].accName.toString(),
                             _OrderApprove[index].btDateCheckIn.toString(),
                             _OrderApprove[index].btStartTime.toString(),
                             _OrderApprove[index].btEndTime.toString(),
                             _OrderApprove[index].btCount.toString(),
+                            _OrderApprove[index].foodName.toString(),
+                            _OrderApprove[index].foodCount.toString(),
                             _OrderApprove[index].btTotal.toString(),
                           );
                         },
@@ -301,13 +313,15 @@ class _AllOrderTableState extends State<AllOrderTable>
                           CreateDialogForgetPass(
                             filterItemsdisapprove[index].btId.toString(),
                             filterItemsdisapprove[index].tbId.toString(),
-                            filterItemsdisapprove[index].accId.toString(),
+                            filterItemsdisapprove[index].accName,
                             filterItemsdisapprove[index]
                                 .btDateCheckIn
                                 .toString(),
                             filterItemsdisapprove[index].btStartTime.toString(),
                             filterItemsdisapprove[index].btEndTime.toString(),
                             filterItemsdisapprove[index].btCount.toString(),
+                            filterItemsdisapprove[index].foodName.toString(),
+                            filterItemsdisapprove[index].foodCount.toString(),
                             filterItemsdisapprove[index].btTotal.toString(),
                           );
                         },
@@ -322,18 +336,20 @@ class _AllOrderTableState extends State<AllOrderTable>
   Future CreateDialogForgetPass(
           String btid,
           String tbid,
-          String accid,
+          String accname,
           String date,
           String timecheckin,
           String timecheckout,
           String count,
+          String foodname,
+          String foodcount,
           String total) =>
       showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => AlertDialog(
           title: Container(
-            height: 200,
+            height: 300,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -360,7 +376,7 @@ class _AllOrderTableState extends State<AllOrderTable>
                       )),
                     ),
                     Text(
-                      "${btid}",
+                      btid.toString(),
                       style: GoogleFonts.kanit(
                           textStyle: TextStyle(
                         fontSize: 14.0,
@@ -380,7 +396,7 @@ class _AllOrderTableState extends State<AllOrderTable>
                       )),
                     ),
                     Text(
-                      "${accid}",
+                      accname,
                       style: GoogleFonts.kanit(
                           textStyle: TextStyle(
                         fontSize: 14.0,
@@ -461,6 +477,46 @@ class _AllOrderTableState extends State<AllOrderTable>
                     ),
                     Text(
                       "${tbid}",
+                      style: GoogleFonts.kanit(
+                          textStyle: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black54,
+                      )),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "อาหาร : ",
+                      style: GoogleFonts.kanit(
+                          textStyle: TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.black,
+                      )),
+                    ),
+                    Text(
+                      foodname,
+                      style: GoogleFonts.kanit(
+                          textStyle: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black54,
+                      )),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "ราคา : ",
+                      style: GoogleFonts.kanit(
+                          textStyle: TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.black,
+                      )),
+                    ),
+                    Text(
+                      "${foodcount}",
                       style: GoogleFonts.kanit(
                           textStyle: TextStyle(
                         fontSize: 14.0,
