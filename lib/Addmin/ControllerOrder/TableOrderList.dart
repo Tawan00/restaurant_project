@@ -22,6 +22,10 @@ class _TableOrderListState extends State<TableOrderList> {
     GetOrder();
   }
 
+  var _name = TextEditingController();
+  var _tel = TextEditingController();
+  var _person = TextEditingController();
+  var _checkin = TextEditingController();
 
   List<OrderModel> OrderData;
   List<OrderModel> filterItems;
@@ -62,172 +66,170 @@ class _TableOrderListState extends State<TableOrderList> {
             },
           ),
         ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                child: TextField(
-                  style: GoogleFonts.kanit(
+        body: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.only(left: 20.0, right: 20.0),
+              child: TextField(
+                style: GoogleFonts.kanit(
+                    textStyle: TextStyle(
+                        fontWeight: FontWeight.w400, color: Colors.black)),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(10.0),
+                  hintText: "ชื่อ หรือ เวลาเช็คอิน",
+                  hintStyle: GoogleFonts.kanit(
                       textStyle: TextStyle(
-                          fontWeight: FontWeight.w400, color: Colors.black)),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(10.0),
-                    hintText: "ชื่อ หรือ เวลาเช็คอิน",
-                    hintStyle: GoogleFonts.kanit(
-                        textStyle: TextStyle(
-                            fontWeight: FontWeight.w400, color: Colors.black54)),
-                    icon: Icon(
-                      Icons.search,
-                    ),
+                          fontWeight: FontWeight.w400, color: Colors.black54)),
+                  icon: Icon(
+                    Icons.search,
                   ),
-                  onChanged: (value) {
-                    setState(() {
-                      filterItems = OrderData.where((u) => (u.accName
-                              .toString()
-                              .toLowerCase()
-                              .contains(value.toLowerCase()) ||
-                          u.btDateCheckIn
-                              .toString()
-                              .toLowerCase()
-                              .contains(value.toLowerCase()))).toList();
-                    });
-                  },
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    filterItems = OrderData.where((u) => (u.accName
+                            .toString()
+                            .toLowerCase()
+                            .contains(value.toLowerCase()) ||
+                        u.btDateCheckIn
+                            .toString()
+                            .toLowerCase()
+                            .contains(value.toLowerCase()))).toList();
+                  });
+                },
               ),
-              Expanded(
-                child: (OrderData == null)
-                    ? Material(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[CircularProgressIndicator()],
-                            ),
-                          ],
-                        ),
-                      )
-                    : ListView(
+            ),
+            Expanded(
+              child: (OrderData == null)
+                  ? Material(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 20, right: 20),
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: DataTable(
-                                horizontalMargin: 0,
-                                // columnSpacing: 0,
-                                columns: [
-                                  DataColumn(
-                                      label: Text(
-                                    'ชื่อ',
-                                    style: GoogleFonts.kanit(
-                                        textStyle: TextStyle(
-                                            color: Color(0xFFD17E50),
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.w600)),
-                                  )),
-                                  DataColumn(
-                                      label: Text(
-                                    'จำนวนคน',
-                                    style: GoogleFonts.kanit(
-                                        textStyle: TextStyle(
-                                            color: Color(0xFFD17E50),
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.w600)),
-                                  )),
-                                  DataColumn(
-                                      label: Text(
-                                    'วันที่เข้า',
-                                    style: GoogleFonts.kanit(
-                                        textStyle: TextStyle(
-                                            color: Color(0xFFD17E50),
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.w600)),
-                                  )),
-                                  DataColumn(
-                                      label: Text(
-                                    'แก้ไข',
-                                    style: GoogleFonts.kanit(
-                                        textStyle: TextStyle(
-                                            color: Color(0xFFD17E50),
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.w600)),
-                                  )),
-                                ],
-                                rows: List<DataRow>.generate(
-                                    filterItems.length,
-                                    (index) => DataRow(
-                                          cells: <DataCell>[
-                                            DataCell(Center(
-                                              child: Text(
-                                                filterItems[index].accName,
-                                                style: GoogleFonts.kanit(
-                                                    textStyle: TextStyle(
-                                                        color: Colors.black)),
-                                              ),
-                                            )),
-                                            DataCell(Center(
-                                              child: Text(
-                                                '${filterItems[index].btCount}',
-                                                style: GoogleFonts.kanit(
-                                                    textStyle: TextStyle(
-                                                        color: Colors.black)),
-                                              ),
-                                            )),
-                                            DataCell(Center(
-                                              child: Text(
-                                                filterItems[index]
-                                                    .btDateCheckIn,
-                                                style: GoogleFonts.kanit(
-                                                    textStyle: TextStyle(
-                                                        color: Colors.black)),
-                                              ),
-                                            )),
-                                            DataCell(Center(
-                                              child: ListTile(
-                                                leading: Icon(
-                                                  Icons.edit,
-                                                  color: Colors.green[600],
-                                                ),
-                                                onTap: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder:
-                                                              (context) =>
-                                                                  editOrder(
-                                                                    id: filterItems[
-                                                                            index]
-                                                                        .btId,
-                                                                    name: filterItems[
-                                                                            index]
-                                                                        .accName,
-                                                                    person: filterItems[
-                                                                            index]
-                                                                        .btCount,
-                                                                    checkin: filterItems[
-                                                                            index]
-                                                                        .btDateCheckIn,
-                                                                    starttime:
-                                                                        filterItems[index]
-                                                                            .btStartTime,
-                                                                    endtime: filterItems[
-                                                                            index]
-                                                                        .btEndTime,
-                                                                  )));
-                                                },
-                                              ),
-                                            )),
-                                          ],
-                                        )),
-                              ),
-                            ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[CircularProgressIndicator()],
                           ),
                         ],
                       ),
-              ),
-            ],
-          ),
+                    )
+                  : ListView(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: DataTable(
+                                  columns: [
+                                    DataColumn(
+                                        label: Text(
+                                      'ชื่อ',
+                                      style: GoogleFonts.kanit(
+                                          textStyle: TextStyle(
+                                              color: Color(0xFFD17E50),
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.w600)),
+                                    )),
+                                    DataColumn(
+                                        label: Text(
+                                      'จำนวนคน',
+                                      style: GoogleFonts.kanit(
+                                          textStyle: TextStyle(
+                                              color: Color(0xFFD17E50),
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.w600)),
+                                    )),
+                                    DataColumn(
+                                        label: Text(
+                                      'วันที่เข้า',
+                                      style: GoogleFonts.kanit(
+                                          textStyle: TextStyle(
+                                              color: Color(0xFFD17E50),
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.w600)),
+                                    )),
+                                    DataColumn(
+                                        label: Text(
+                                      'แก้ไข',
+                                      style: GoogleFonts.kanit(
+                                          textStyle: TextStyle(
+                                              color: Color(0xFFD17E50),
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.w600)),
+                                    )),
+                                  ],
+                                  rows: List<DataRow>.generate(
+                                      filterItems.length,
+                                      (index) => DataRow(
+                                            cells: <DataCell>[
+                                              DataCell(Center(
+                                                child: Text(
+                                                  filterItems[index].accName,
+                                                  style: GoogleFonts.kanit(
+                                                      textStyle: TextStyle(
+                                                          color: Colors.black)),
+                                                ),
+                                              )),
+                                              DataCell(Center(
+                                                child: Text(
+                                                  '${filterItems[index].btCount}',
+                                                  style: GoogleFonts.kanit(
+                                                      textStyle: TextStyle(
+                                                          color: Colors.black)),
+                                                ),
+                                              )),
+                                              DataCell(Center(
+                                                child: Text(
+                                                  filterItems[index]
+                                                      .btDateCheckIn,
+                                                  style: GoogleFonts.kanit(
+                                                      textStyle: TextStyle(
+                                                          color: Colors.black)),
+                                                ),
+                                              )),
+                                              DataCell(Center(
+                                                child: ListTile(
+                                                  leading: Icon(
+                                                    Icons.edit,
+                                                    color: Colors.green[600],
+                                                  ),
+                                                  onTap: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    editOrder(
+                                                                      id: filterItems[
+                                                                              index]
+                                                                          .btId,
+                                                                      name: filterItems[
+                                                                              index]
+                                                                          .accName,
+                                                                      person: filterItems[
+                                                                              index]
+                                                                          .btCount,
+                                                                      checkin: filterItems[
+                                                                              index]
+                                                                          .btDateCheckIn,
+                                                                      starttime:
+                                                                          filterItems[index]
+                                                                              .btStartTime,
+                                                                      endtime: filterItems[
+                                                                              index]
+                                                                          .btEndTime,
+                                                                    )));
+                                                  },
+                                                ),
+                                              )),
+                                            ],
+                                          )),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
+          ],
         ));
   }
 }
