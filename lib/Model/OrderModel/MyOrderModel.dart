@@ -72,4 +72,6 @@ class MyOrderModel {
         "bt_total": btTotal,
         "bt_status": btStatus,
       };
+
+  toLowerCase() {}
 }
