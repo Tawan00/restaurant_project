@@ -14,7 +14,14 @@ class OrderList extends StatefulWidget {
   List<String> nameFood;
   List<int> priceFood;
   List<String> imgFood;
-  OrderList({this.bt_id, this.id, this.nameFood, this.imgFood, this.priceFood});
+  int amount;
+  OrderList(
+      {this.bt_id,
+      this.id,
+      this.nameFood,
+      this.imgFood,
+      this.priceFood,
+      this.amount});
 
   @override
   _OderListState createState() => _OderListState();
@@ -144,7 +151,8 @@ class _OderListState extends State<OrderList> {
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("1 x ${this.widget.nameFood[index]}",
+                                Text(
+                                    "${this.widget.amount} x ${this.widget.nameFood[index]}",
                                     style: GoogleFonts.kanit(
                                       textStyle: TextStyle(
                                           fontWeight: FontWeight.w600,

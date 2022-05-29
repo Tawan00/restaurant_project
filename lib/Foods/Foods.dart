@@ -35,7 +35,8 @@ class _Foods extends State<Foods> with SingleTickerProviderStateMixin {
   int foodlength = 0;
   int sumcount = 0;
   int selected = 0;
-
+  int amount = 0;
+  var count = TextEditingController();
   String token = "";
 
   Future<Null> getToken() async {
@@ -57,7 +58,7 @@ class _Foods extends State<Foods> with SingleTickerProviderStateMixin {
         _myorderModel = myOrderModelFromJson(responseString);
         print("orderModel -> working...");
         print(_myorderModel[0].btId);
-        print(_myorderModel[0].accId);
+        print(_myorderModel[0].accName);
         print(_myorderModel[0].btCount);
         print(_myorderModel[0].btDateCheckIn);
         print(_myorderModel[0].btStartTime);
@@ -102,6 +103,23 @@ class _Foods extends State<Foods> with SingleTickerProviderStateMixin {
     }
   }
 
+  int dataToChange = 1;
+  void changedataAdd() {
+    setState(() {
+      dataToChange += 1;
+      print(dataToChange);
+    });
+  }
+
+  void changedataReMov() {
+    setState(() {
+      dataToChange -= 1;
+      if (dataToChange <= 1) {
+        dataToChange = 1;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,6 +161,7 @@ class _Foods extends State<Foods> with SingleTickerProviderStateMixin {
                             nameFood: nameFood,
                             imgFood: Img,
                             priceFood: priceFood,
+                            amount: amount,
                           )));
                 },
               ),
@@ -348,17 +367,28 @@ class _Foods extends State<Foods> with SingleTickerProviderStateMixin {
                 padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0),
                 child: GestureDetector(
                   onTap: () {
-                    setState(() {});
-                    print("CountCart = ${Foodid.length}");
-                    print(_type[index].foodId);
-                    Foodid.add(_type[index].foodId);
-                    Img.add(_type[index].foodImg);
-                    nameFood.add(_type[index].foodName);
-                    if (_type[index].foodPriceNew != 0) {
-                      priceFood.add(_type[index].foodPriceNew);
-                    } else {
-                      priceFood.add(_type[index].foodPrice);
-                    }
+                    setState(() {
+                      // DialogDetailBookTable(context, _type[index].foodName,
+                      //     _type[index].foodPrice.toString());
+                    });
+                    CreateDialogForgetPass(
+                      context,
+                      _type[index].foodId,
+                      _type[index].foodImg,
+                      _type[index].foodName,
+                      _type[index].foodPrice,
+                      _type[index].foodPriceNew,
+                    );
+                    // print("CountCart = ${Foodid.length}");
+                    // print(_type[index].foodId);
+                    // Foodid.add(_type[index].foodId);
+                    // Img.add(_type[index].foodImg);
+                    // nameFood.add(_type[index].foodName);
+                    // if (_type[index].foodPriceNew != 0) {
+                    //   priceFood.add(_type[index].foodPriceNew);
+                    // } else {
+                    //   priceFood.add(_type[index].foodPrice);
+                    // }
                   },
                   child: Container(
                     child: Row(
@@ -387,4 +417,95 @@ class _Foods extends State<Foods> with SingleTickerProviderStateMixin {
       ),
     );
   }
+
+  Future CreateDialogForgetPass(BuildContext context, int foodid,
+          String foodimg, String foodname, int foodprice, int foodnewprice) =>
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: Container(
+            height: 70,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  foodname,
+                  style: GoogleFonts.kanit(
+                      textStyle: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  )),
+                ),
+                Text(
+                  "ราคา  ${foodprice}  บาท",
+                  style: GoogleFonts.kanit(
+                      textStyle: TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.black54,
+                  )),
+                ),
+              ],
+            ),
+          ),
+          content: Container(
+            height: 100,
+            child: Column(
+              children: [
+                TextField(
+                  controller: count,
+                  decoration: InputDecoration(
+                    labelText: 'กรอกจำนวนอาหาร',
+                    labelStyle: GoogleFonts.kanit(
+                        textStyle: TextStyle(
+                            fontSize: 15.0,
+                            color: Colors.grey.withOpacity(0.5))),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            FlatButton(
+              child: Text(
+                'ยกเลิก',
+                style: GoogleFonts.kanit(
+                    textStyle: TextStyle(
+                  color: Colors.red[400],
+                  fontWeight: FontWeight.w600,
+                )),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(
+                'เพิ่มใส่ตะกร้า',
+                style: GoogleFonts.kanit(
+                    textStyle: TextStyle(
+                  color: Colors.green[400],
+                  fontWeight: FontWeight.w600,
+                )),
+              ),
+              onPressed: () async {
+                amount = int.parse(count.text);
+                Foodid.add(foodid);
+                Img.add(foodimg);
+                nameFood.add(foodname);
+                if (foodnewprice != 0) {
+                  priceFood.add(foodnewprice * int.parse(count.text));
+                } else {
+                  priceFood.add(foodprice * int.parse(count.text));
+                }
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      );
 }
