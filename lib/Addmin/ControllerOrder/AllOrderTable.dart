@@ -24,9 +24,11 @@ class _AllOrderTableState extends State<AllOrderTable>
   TabController _tabControllor;
 
   List<MyOrderModel> _OrderApprove;
+  List<MyOrderModel> _OrderApprove2;
   List<MyOrderModel> filterItemsApprove;
 
   List<MyOrderModel> _Orderdisapprove;
+  List<MyOrderModel> _Orderdisapprove2;
   List<MyOrderModel> filterItemsdisapprove;
 
   Future<Null> ApprveOrder() async {
@@ -37,17 +39,8 @@ class _AllOrderTableState extends State<AllOrderTable>
       setState(() {
         final String responseString = response.body;
         _OrderApprove = myOrderModelFromJson(responseString);
-        filterItemsApprove = _OrderApprove;
 
-        for (var i = 0; i < _OrderApprove.length; i++) {
-          var num = filterItemsApprove
-              .where((food) => _OrderApprove[i]
-                  .foodName
-                  .toLowerCase()
-                  .contains(_OrderApprove[i].foodName.toLowerCase()))
-              .length;
-          print(num);
-        }
+        filterItemsApprove = _OrderApprove;
       });
     }
   }
@@ -60,10 +53,35 @@ class _AllOrderTableState extends State<AllOrderTable>
       setState(() {
         final String responseString = response.body;
         _Orderdisapprove = myOrderModelFromJson(responseString);
+
         filterItemsdisapprove = _Orderdisapprove;
       });
     }
   }
+
+  // Future<Null> ApprveOrder2() async {
+  //   var url = "http://itoknode.comsciproject.com/bookor/ApproveOrders";
+  //   final response = await http.get(Uri.parse(url));
+  //   print(response.statusCode);
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       final String responseString = response.body;
+  //       _OrderApprove2 = myOrderModelFromJson(responseString);
+  //     });
+  //   }
+  // }
+
+  // Future<Null> DisapproveOrder2() async {
+  //   var url = "http://itoknode.comsciproject.com/bookor/disapproveOrders";
+  //   final response = await http.get(Uri.parse(url));
+  //   print(response.statusCode);
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       final String responseString = response.body;
+  //       _Orderdisapprove2 = myOrderModelFromJson(responseString);
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -311,18 +329,16 @@ class _AllOrderTableState extends State<AllOrderTable>
                         ),
                         onTap: () {
                           CreateDialogForgetPass(
-                            filterItemsdisapprove[index].btId.toString(),
-                            filterItemsdisapprove[index].tbId.toString(),
-                            filterItemsdisapprove[index].accName,
-                            filterItemsdisapprove[index]
-                                .btDateCheckIn
-                                .toString(),
-                            filterItemsdisapprove[index].btStartTime.toString(),
-                            filterItemsdisapprove[index].btEndTime.toString(),
-                            filterItemsdisapprove[index].btCount.toString(),
-                            filterItemsdisapprove[index].foodName.toString(),
-                            filterItemsdisapprove[index].foodCount.toString(),
-                            filterItemsdisapprove[index].btTotal.toString(),
+                            _Orderdisapprove[index].btId.toString(),
+                            _Orderdisapprove[index].tbId.toString(),
+                            _Orderdisapprove[index].accName.toString(),
+                            _Orderdisapprove[index].btDateCheckIn.toString(),
+                            _Orderdisapprove[index].btStartTime.toString(),
+                            _Orderdisapprove[index].btEndTime.toString(),
+                            _Orderdisapprove[index].btCount.toString(),
+                            _Orderdisapprove[index].foodName.toString(),
+                            _Orderdisapprove[index].foodCount.toString(),
+                            _Orderdisapprove[index].btTotal.toString(),
                           );
                         },
                       ),
@@ -388,7 +404,7 @@ class _AllOrderTableState extends State<AllOrderTable>
                 Row(
                   children: [
                     Text(
-                      "รหัสลูกค้า : ",
+                      "ชื่อลูกค้า : ",
                       style: GoogleFonts.kanit(
                           textStyle: TextStyle(
                         fontSize: 15.0,
