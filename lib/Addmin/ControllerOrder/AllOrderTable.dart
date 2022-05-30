@@ -524,7 +524,7 @@ class _AllOrderTableState extends State<AllOrderTable>
                 Row(
                   children: [
                     Text(
-                      "ราคา : ",
+                      "จำนวน : ",
                       style: GoogleFonts.kanit(
                           textStyle: TextStyle(
                         fontSize: 15.0,

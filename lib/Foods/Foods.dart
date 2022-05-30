@@ -35,7 +35,8 @@ class _Foods extends State<Foods> with SingleTickerProviderStateMixin {
   int foodlength = 0;
   int sumcount = 0;
   int selected = 0;
-  int amount = 0;
+  List<int> amount = [];
+
   var count = TextEditingController();
   String token = "";
 
@@ -493,7 +494,7 @@ class _Foods extends State<Foods> with SingleTickerProviderStateMixin {
                 )),
               ),
               onPressed: () async {
-                amount = int.parse(count.text);
+                amount.add(int.parse(count.text));
                 Foodid.add(foodid);
                 Img.add(foodimg);
                 nameFood.add(foodname);

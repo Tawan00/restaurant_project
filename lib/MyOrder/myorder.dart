@@ -398,7 +398,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                 Row(
                   children: [
                     Text(
-                      "รหัสลูกค้า : ",
+                      "ชื่อลูกค้า : ",
                       style: GoogleFonts.kanit(
                           textStyle: TextStyle(
                         fontSize: 15.0,
@@ -518,7 +518,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                 Row(
                   children: [
                     Text(
-                      "ราคาอาหาร :",
+                      "จำนวน :",
                       style: GoogleFonts.kanit(
                           textStyle: TextStyle(
                         fontSize: 15.0,

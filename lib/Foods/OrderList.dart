@@ -14,14 +14,16 @@ class OrderList extends StatefulWidget {
   List<String> nameFood;
   List<int> priceFood;
   List<String> imgFood;
-  int amount;
+  List<int> count;
+  List<int> amount;
   OrderList(
       {this.bt_id,
       this.id,
       this.nameFood,
       this.imgFood,
       this.priceFood,
-      this.amount});
+      this.amount,
+      this.count});
 
   @override
   _OderListState createState() => _OderListState();
@@ -152,7 +154,7 @@ class _OderListState extends State<OrderList> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                    "${this.widget.amount} x ${this.widget.nameFood[index]}",
+                                    "${this.widget.amount[index]} x ${this.widget.nameFood[index]}",
                                     style: GoogleFonts.kanit(
                                       textStyle: TextStyle(
                                           fontWeight: FontWeight.w600,
@@ -230,7 +232,7 @@ class _OderListState extends State<OrderList> {
                 print(this.widget.id);
                 print(this.widget.priceFood);
                 final TkAddModel add = await Add(this.widget.bt_id.toString(),
-                    this.widget.id, this.widget.priceFood);
+                    this.widget.id, this.widget.amount);
                 if (add.message == "Success") {
                   showPassDialog();
                 } else {
