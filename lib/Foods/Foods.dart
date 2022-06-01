@@ -439,13 +439,32 @@ class _Foods extends State<Foods> with SingleTickerProviderStateMixin {
                     color: Colors.black,
                   )),
                 ),
-                Text(
-                  "ราคา  ${foodprice}  บาท",
-                  style: GoogleFonts.kanit(
-                      textStyle: TextStyle(
-                    fontSize: 18.0,
-                    color: Colors.black54,
-                  )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(foodprice.toString(),
+                        style: GoogleFonts.kanit(
+                            textStyle: TextStyle(
+                          decoration: foodnewprice.toString() != "0"
+                              ? TextDecoration.lineThrough
+                              : null,
+                          fontSize: 14.0,
+                          color: foodnewprice.toString() != "0"
+                              ? Color(0xFFFF4848)
+                              : Color(0xFFCC8053),
+                        ))),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    foodnewprice.toString() != "0"
+                        ? Text(
+                            foodnewprice.toString(),
+                            style: GoogleFonts.kanit(
+                                textStyle: TextStyle(
+                                    fontSize: 14.0, color: Color(0xFFCC8053))),
+                          )
+                        : Container()
+                  ],
                 ),
               ],
             ),

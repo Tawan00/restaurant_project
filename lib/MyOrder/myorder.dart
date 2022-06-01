@@ -48,35 +48,65 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
     GetOrder2(userModel[0].accId.toString());
   }
 
-  List<MyOrderModel> MyOrderData;
+  List<MyOrderModel> MyOrderData1;
   List<MyOrderModel> MyOrderData2;
+  List<MyOrderModel> MyOrderData3;
+  List<MyOrderModel> MyOrderData4;
+  List<String> nameFood = [];
+  List<int> amount = [];
 
-  List<MyOrderModel> filterItems2;
-  Future<Null> GetOrder(String acc_id) async {
+  Future<Null> GetOrder3(String bo_id) async {
     var url = "http://itoknode@itoknode.comsciproject.com/bookor/MyOrder";
-    final response = await http.post(Uri.parse(url), body: {"acc_id": acc_id});
+    final response = await http.post(Uri.parse(url), body: {"bo_id": bo_id});
     //print(response.statusCode);
     print(response.statusCode);
     if (response.statusCode == 200) {
       setState(() {
         final String responseString = response.body;
-        MyOrderData = myOrderModelFromJson(responseString);
-        filterItems2 = MyOrderData;
+        MyOrderData1 = myOrderModelFromJson(responseString);
       });
     }
   }
 
-  List<MyOrderModel> filterItems;
-  Future<Null> GetOrder2(String acc_id) async {
+  Future<Null> GetOrder4(String bo_id) async {
     var url = "http://itoknode@itoknode.comsciproject.com/bookor/MyOrder2";
-    final response = await http.post(Uri.parse(url), body: {"acc_id": acc_id});
+    final response = await http.post(Uri.parse(url), body: {"bo_id": bo_id});
     //print(response.statusCode);
     print(response.statusCode);
     if (response.statusCode == 200) {
       setState(() {
         final String responseString = response.body;
         MyOrderData2 = myOrderModelFromJson(responseString);
-        filterItems = MyOrderData2;
+      });
+    }
+  }
+
+  List<MyOrderModel> filterItems2;
+  Future<Null> GetOrder(String acc_id) async {
+    var url = "http://itoknode@itoknode.comsciproject.com/bookor/MyOrder3";
+    final response = await http.post(Uri.parse(url), body: {"acc_id": acc_id});
+    //print(response.statusCode);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      setState(() {
+        final String responseString = response.body;
+        MyOrderData3 = myOrderModelFromJson(responseString);
+        filterItems2 = MyOrderData3;
+      });
+    }
+  }
+
+  List<MyOrderModel> filterItems;
+  Future<Null> GetOrder2(String acc_id) async {
+    var url = "http://itoknode@itoknode.comsciproject.com/bookor/MyOrder4";
+    final response = await http.post(Uri.parse(url), body: {"acc_id": acc_id});
+    //print(response.statusCode);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      setState(() {
+        final String responseString = response.body;
+        MyOrderData4 = myOrderModelFromJson(responseString);
+        filterItems = MyOrderData4;
       });
     }
   }
@@ -123,7 +153,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
             ],
           ),
         ),
-        body: (MyOrderData == null || MyOrderData2 == null)
+        body: (MyOrderData3 == null || MyOrderData4 == null)
             ? Material(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -162,7 +192,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
             ),
             onChanged: (value) {
               setState(() {
-                filterItems2 = MyOrderData.where((u) => (u.btDate
+                filterItems2 = MyOrderData3.where((u) => (u.btDate
                         .toString()
                         .toLowerCase()
                         .contains(value.toLowerCase()) ||
@@ -175,7 +205,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
           ),
         ),
         Expanded(
-          child: (MyOrderData == null)
+          child: (MyOrderData3 == null)
               ? Material(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -200,12 +230,12 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                           ],
                         ),
                         title: Text(
-                            "${MyOrderData[index].btDate.day}/${MyOrderData[index].btDate.month}/${MyOrderData[index].btDate.year}",
+                            "${MyOrderData3[index].btDate.day}/${MyOrderData3[index].btDate.month}/${MyOrderData3[index].btDate.year}",
                             style: GoogleFonts.kanit(
                                 fontWeight: FontWeight.w500,
                                 textStyle: TextStyle(color: Colors.black))),
                         subtitle: Text(
-                            "ใบสั่งจองที่ ${MyOrderData[index].btId}",
+                            "ใบสั่งจองที่ ${MyOrderData3[index].btId}",
                             style: GoogleFonts.kanit(
                                 textStyle: TextStyle(color: Colors.black54))),
                         trailing: Column(
@@ -214,24 +244,32 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                             Text("รอดำเนินการ",
                                 style: GoogleFonts.kanit(
                                     textStyle: TextStyle(color: Colors.red))),
-                            Text("${MyOrderData[index].btTotal} ฿",
+                            Text("${MyOrderData3[index].btTotal} ฿",
                                 style: GoogleFonts.kanit(
                                     fontWeight: FontWeight.w700,
                                     textStyle: TextStyle(color: Colors.black))),
                           ],
                         ),
-                        onTap: () {
+                        onTap: () async {
+                          GetOrder3(filterItems2[index].boId.toString());
+                          var bo = filterItems2[index].boId.toString();
+                          for (var i = 0; i < MyOrderData1.length; i++) {
+                            nameFood.add(MyOrderData1[i].foodName +
+                                "x" +
+                                MyOrderData1[i].foodCount.toString());
+                            amount.add(MyOrderData1[i].foodCount);
+                          }
+
                           CreateDialogForgetPass(
-                            filterItems2[index].btId.toString(),
-                            filterItems2[index].tbId.toString(),
-                            filterItems2[index].accName,
-                            filterItems2[index].btDateCheckIn.toString(),
-                            filterItems2[index].btStartTime.toString(),
-                            filterItems2[index].btEndTime.toString(),
-                            filterItems2[index].btCount.toString(),
-                            filterItems2[index].foodName,
-                            filterItems2[index].foodCount.toString(),
-                            filterItems2[index].btTotal.toString(),
+                            MyOrderData1[0].btId.toString(),
+                            MyOrderData1[0].tbId.toString(),
+                            MyOrderData1[0].accName,
+                            MyOrderData1[0].btDateCheckIn.toString(),
+                            MyOrderData1[0].btStartTime.toString(),
+                            MyOrderData1[0].btEndTime.toString(),
+                            MyOrderData1[0].btCount.toString(),
+                            nameFood,
+                            MyOrderData1[0].btTotal.toString(),
                           );
                         },
                       ),
@@ -263,7 +301,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
             ),
             onChanged: (value) {
               setState(() {
-                filterItems = MyOrderData2.where((u) => (u.btDate
+                filterItems = MyOrderData4.where((u) => (u.btDate
                         .toString()
                         .toLowerCase()
                         .contains(value.toLowerCase()) ||
@@ -276,7 +314,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
           ),
         ),
         Expanded(
-          child: (MyOrderData2 == null)
+          child: (MyOrderData4 == null)
               ? Material(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -322,18 +360,24 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                           ],
                         ),
                         onTap: () {
-                          CreateDialogForgetPass(
-                            filterItems[index].btId.toString(),
-                            filterItems[index].tbId.toString(),
-                            filterItems[index].accName,
-                            filterItems[index].btDateCheckIn.toString(),
-                            filterItems[index].btStartTime.toString(),
-                            filterItems[index].btEndTime.toString(),
-                            filterItems[index].btCount.toString(),
-                            filterItems[index].foodName,
-                            filterItems[index].foodCount.toString(),
-                            filterItems[index].btTotal.toString(),
-                          );
+                          // GetOrder4(filterItems[index].boId.toString());
+                          // var bo = filterItems[index].boId.toString();
+                          // for (var i = 0; i < MyOrderData4.length; i++) {
+                          //   nameFood.add(MyOrderData2[i].foodName);
+                          //   amount.add(MyOrderData2[i].foodCount);
+                          // }
+                          // CreateDialogForgetPass(
+                          //   MyOrderData2[0].btId.toString(),
+                          //   MyOrderData2[0].tbId.toString(),
+                          //   MyOrderData2[0].accName,
+                          //   MyOrderData2[0].btDateCheckIn.toString(),
+                          //   MyOrderData2[0].btStartTime.toString(),
+                          //   MyOrderData2[0].btEndTime.toString(),
+                          //   MyOrderData2[0].btCount.toString(),
+                          //   nameFood,
+                          //   amount,
+                          //   MyOrderData2[0].btTotal.toString(),
+                          // );
                         },
                       ),
                     );
@@ -351,8 +395,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
           String timecheckin,
           String timecheckout,
           String count,
-          String foodname,
-          String foodcount,
+          List<String> foodname,
           String total) =>
       showDialog(
         context: context,
@@ -506,27 +549,7 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
                       )),
                     ),
                     Text(
-                      foodname,
-                      style: GoogleFonts.kanit(
-                          textStyle: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.black54,
-                      )),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text(
-                      "จำนวน :",
-                      style: GoogleFonts.kanit(
-                          textStyle: TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.black,
-                      )),
-                    ),
-                    Text(
-                      "${foodcount}",
+                      foodname.toString(),
                       style: GoogleFonts.kanit(
                           textStyle: TextStyle(
                         fontSize: 14.0,
@@ -570,6 +593,8 @@ class _MyOrderState extends State<MyOrder> with SingleTickerProviderStateMixin {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
+                nameFood.clear();
+                amount.clear();
               },
             ),
           ],

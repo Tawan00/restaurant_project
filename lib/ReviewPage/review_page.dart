@@ -155,7 +155,7 @@ class _ReviewPageState extends State<ReviewPage> {
                       fontWeight: FontWeight.w600, color: Colors.black)),
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(10.0),
-                hintText: "ชื่อ หรือ ราคา",
+                hintText: "ชื่อ หรือ คะแนน",
                 hintStyle: GoogleFonts.kanit(
                     textStyle: TextStyle(
                         fontWeight: FontWeight.w600, color: Colors.black54)),
